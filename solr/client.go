@@ -32,7 +32,7 @@ func Search(query SolrQuery) ([]byte, error) {
 	q.Set("hl.mergeContiguous", "true")
 	q.Set("hl.fragsize", "3500")
 	q.Set("hl.maxAnalyzedChars", "100000")
-	q.Set("hl.method", "unified")
+	// q.Set("hl.method", "unified")
 	u.RawQuery = q.Encode()
 
 	data := Map{
