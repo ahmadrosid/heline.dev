@@ -6,3 +6,6 @@ go:
 
 reset:
 	bash scripts/solr.sh clean && bash scripts/solr.sh prepare
+
+prod:
+	bash scripts/run.sh production
