@@ -58,8 +58,7 @@ export default function Home() {
         }
         
         if (filter?.lang?.length > 0) {
-            let lang = filter.lang.join(",")
-            queryParam += `&filter[lang]=${lang}`
+            queryParam += `&filter[lang]=${filter.lang.join(",")}`
         }
         
         if (filter?.path?.length > 0) {
@@ -279,8 +278,6 @@ export default function Home() {
                                                         if (index === 4) {
                                                             if (chunk.includes("<mark>")) {
                                                                 contents.push(chunk);
-                                                            } else if (chunk.includes(q)) {
-                                                                contents.push(chunk.replace(q, `<mark>${q}</mark>`));
                                                             }
                                                             chunk = "";
                                                             index = 0;

@@ -26,11 +26,13 @@ func Search(query SolrQuery) ([]byte, error) {
 	q.Set("hl.simple.pre", "<mark>")
 	q.Set("hl.simple.post", "</mark>")
 	q.Set("hl.snippets", "3")
-	q.Set("hl.usePhraseHighlighter", "true")
-	q.Set("hl.requireFieldMatch", "true")
-	q.Set("hl.highlightMultiTerm", "true")
-	q.Set("hl.mergeContiguous", "true")
+	// q.Set("hl.usePhraseHighlighter", "true")
+	// q.Set("hl.requireFieldMatch", "true")
+	// q.Set("hl.highlightMultiTerm", "true")
+	// q.Set("hl.mergeContiguous", "true")
 	q.Set("hl.fragsize", "2500")
+	q.Set("hl.maxAnalyzedChars", "100000")
+	q.Set("hl.method", "unified")
 	u.RawQuery = q.Encode()
 
 	data := Map{
