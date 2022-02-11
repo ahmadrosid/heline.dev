@@ -30,7 +30,7 @@ func Search(query SolrQuery) ([]byte, error) {
 	q.Set("hl.requireFieldMatch", "true")
 	q.Set("hl.highlightMultiTerm", "true")
 	q.Set("hl.mergeContiguous", "true")
-	q.Set("hl.fragsize", "2500")
+	q.Set("hl.fragsize", "3500")
 	q.Set("hl.maxAnalyzedChars", "100000")
 	q.Set("hl.method", "unified")
 	u.RawQuery = q.Encode()
