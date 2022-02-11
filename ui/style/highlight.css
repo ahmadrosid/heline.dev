@@ -1,0 +1,82 @@
+.truncate {
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+  
+.highlight-table {
+    font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+    color: #24292f;
+    font-size: 12px;
+    word-wrap: normal;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.hl-num {
+    color: #6e7781;
+    line-height: 20px;
+    padding-right: 10px;
+    padding-left: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.hl-num::before {
+    content: attr(data-line);
+    margin-right: 4px;
+}
+
+/* Markup Heading */
+.hl-mh {
+    color: #0550ae
+}
+
+/* String */
+.hl-s {
+    color: #0a3069
+}
+
+/* Identifier */
+.hl-id {
+    color: #b465e2
+}
+
+/* Keyword */
+.hl-k {
+    color: #cf222e
+}
+
+/* Constant */
+.hl-c {
+    color: #0550ae
+}
+
+.hl-cmt {
+    color: #6e7781
+}
+
+/* Entity */
+.hl-en {
+    color: #8250df
+}
+
+/* Entity tag */
+.hl-ent {
+    color: #116329
+}
+
+/* Var */
+.hl-v {
+    color: #953800
+}
+
+.hl-vid {
+    color: #404040
+}
+
+.hl-mh {
+    font-weight: bold;
+    color: #0550ae
+}

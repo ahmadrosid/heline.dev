@@ -1,0 +1,47 @@
+name: build
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+
+jobs:
+  test:
+    name: Test & Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.16
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.16
+
+    - name: Use Node.js 16.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.x
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Run go mod tidy
+      run: |
+        set -e
+        cd ui
+        yarn
+        yarn run build
+        cd ../
+        go mod tidy
+        output=$(git status -s)
+        if [ -z "${output}" ]; then
+         exit 0
+        fi
+        echo 'We wish to maintain a tidy state for go mod. Please run `go mod tidy` on your branch, commit and push again.'
+        echo 'Running `go mod tidy` on this CI test yields with the following changes:'
+        echo "$output"
+        exit 1
+
+    - name: Build & Scrape
+      run: go build ./... 
+
