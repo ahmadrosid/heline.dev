@@ -65,8 +65,8 @@ export default function Home() {
             queryParam += `&filter[path]=${filter.path.join(",")}`
         }
         
-        axios.get(`http://localhost:8000/api/search?q=${queryParam}`)
-        // axios.get(`/api/search?q=${queryParam}`)
+        // axios.get(`http://localhost:8000/api/search?q=${queryParam}`)
+        axios.get(`/api/search?q=${queryParam}`)
             .then(res => {
                 if (res.data.hits.hits === null) {
                     setNotFound(true)
