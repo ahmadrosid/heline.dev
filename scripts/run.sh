@@ -24,10 +24,8 @@ if [ "$1" == "ui" ]; then
 fi
 
 if [ "$1" == "stop" ]; then
-  lsof -i tcp:3000 | grep LISTEN | awk '{print $2}' | xargs kill -9
-  heline_stop="./heline server stop"
-  $heline_stop
-  . scripts/solr.sh stop
+  lsof -i tcp:8984 | grep LISTEN | awk '{print $2}' | xargs kill -9
+  lsof -i tcp:8000 | grep LISTEN | awk '{print $2}' | xargs kill -9
 fi
 
 if [ "$1" == "reset" ]; then
