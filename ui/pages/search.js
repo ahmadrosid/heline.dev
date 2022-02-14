@@ -84,7 +84,7 @@ export default function Home() {
             })
 
         if (typeof window !== 'undefined') {
-            router.push(`search?q=${queryParam}`, undefined, { shallow: true })
+            router.push(`search?q=${queryParam}`)
         }
     }
 
