@@ -12,3 +12,6 @@ reset:
 
 prod:
 	bash scripts/run.sh production
+
+stop:
+	bash scripts/solr.sh stop
