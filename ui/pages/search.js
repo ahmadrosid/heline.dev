@@ -21,6 +21,7 @@ export default function Home() {
         if (val == "") {
             return
         }
+        console.log(filter)
 
         if (filter == null) {
 
@@ -65,8 +66,8 @@ export default function Home() {
             queryParam += `&filter[path]=${filter.path.join(",")}`
         }
         
-        // axios.get(`http://localhost:8000/api/search?q=${queryParam}`)
-        axios.get(`/api/search?q=${queryParam}`)
+        axios.get(`https://heline.dev/api/search?q=${queryParam}`)
+        // axios.get(`/api/search?q=${queryParam}`)
             .then(res => {
                 if (res.data.hits.hits === null) {
                     setNotFound(true)
@@ -108,7 +109,7 @@ export default function Home() {
                 fetchData(val, newFilter)
                 return newFilter
             }
-
+            
             newFilter[filterName]?.push(filter)
             fetchData(val, newFilter)
             return newFilter
@@ -134,6 +135,16 @@ export default function Home() {
             return
         }
         updateFilter('lang', index)
+    }
+
+    const getPath = (val) => {
+        let path = String(val)
+        if (path.includes("/")) {
+            let paths = path.split("/")
+            return paths.slice(Math.max(paths.length - 2, 1)).join("/")
+        }
+
+        return val
     }
 
     useEffect(() => {
@@ -217,7 +228,7 @@ export default function Home() {
                                     <div className="flex justify-between items-center text-gray-600 pr-1">
                                         <div className="flex gap-2 items-center">
                                             <input onChange={() => updateFilterPath(index)} className="p-2" type="checkbox" checked={filter.path?.includes(item.val)}/>
-                                            <label className="truncate">{item.val}</label>
+                                            <label className="truncate">{getPath(item.val)}</label>
                                         </div>
                                         <div className="text-sm">{item.count}</div>
                                     </div>
@@ -260,8 +271,8 @@ export default function Home() {
                                                 <span className="text-gray-700 font-light">{item.repo.raw}</span>
                                             </a>
 
-                                            <a target="_blank" href={`https://github.com/${item.repo.raw}/blob/${item.branch.raw}/${item.file_id.raw.split("/").slice(4, 10).join("/")}`} className="flex gap-1 items-center">
-                                                <span className="text-green-500 pl-8">{item.file_id.raw.split("/").slice(3, 10).join("/")}</span>
+                                            <a target="_blank" href={`https://github.com/${item.repo.raw}/blob/${item.branch.raw}/${item.file_id.raw.split("/").slice(4, 100).join("/")}`} className="flex gap-1 items-center">
+                                                <span className="text-green-500 pl-8">{item.file_id.raw.split("/").slice(2, 100).join("/")}</span>
                                             </a>
                                         </div>
                                         <div className="border border-gray-200 rounded-md bg-white p-2 my-2">

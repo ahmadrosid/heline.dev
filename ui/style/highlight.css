@@ -12,11 +12,11 @@
     word-wrap: normal;
     white-space: pre-wrap;
     word-break: break-all;
+    line-height: 1rem;
 }
 
 .hl-num {
     color: #6e7781;
-    line-height: 20px;
     padding-right: 10px;
     padding-left: 10px;
     display: flex;

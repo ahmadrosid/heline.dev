@@ -1,6 +1,9 @@
 install:
 	bash build.sh
 
+next:
+	bash scripts/run.sh ui
+
 go:
 	go build && ./heline server start
 

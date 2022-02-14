@@ -19,10 +19,8 @@ function start_ui() {
   fi
 }
 
-if [ "$1" == "start" ]; then
-  start_solr &
-  start_server &
-  start_ui &
+if [ "$1" == "ui" ]; then
+  start_ui
 fi
 
 if [ "$1" == "stop" ]; then
