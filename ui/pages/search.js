@@ -204,7 +204,7 @@ export default function Home() {
                     <div className="w-full min-w-[250px] max-w-[25%] py-8 space-y-4 pl-4">
                         <div className="space-y-2">
                             <h3 className="text-gray-800 uppercase">Repository</h3>
-                            <input className="bg-white rounded border border-gray-200 w-full px-4 py-3 text-sm" type="text" placeholder="Filter repositories" />
+                            {/* <input className="bg-white rounded border border-gray-200 w-full px-4 py-3 text-sm" type="text" placeholder="Filter repositories" /> */}
                             <div className="py-2 space-y-1">
                             {renderArray(
                                 hits.facets?.repo?.buckets.map((item, index) => (
@@ -221,7 +221,7 @@ export default function Home() {
                         </div>
                         <div className="space-y-2 pt-2">
                             <h3 className="text-gray-800 uppercase">Path</h3>
-                            <input className="bg-white rounded border border-gray-200 w-full px-4 py-3 text-sm" type="text" placeholder="Filter paths" />
+                            {/* <input className="bg-white rounded border border-gray-200 w-full px-4 py-3 text-sm" type="text" placeholder="Filter paths" /> */}
                             <div className="py-2 space-y-1">
                             {renderArray(
                                 hits.facets?.path?.buckets.map((item, index) => (
