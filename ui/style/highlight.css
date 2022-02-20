@@ -1,4 +1,8 @@
-.truncate {
+mark {
+    @apply bg-amber-200;
+}
+
+.truncate-text {
     width: 250px;
     white-space: nowrap;
     overflow: hidden;
