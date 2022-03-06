@@ -46,6 +46,7 @@ export default function Home() {
             }
 
             newFilter[filterName]?.push(filter)
+            val["tbm"] = tbm;
             fetchData(val, newFilter)
             return newFilter
         })
@@ -102,7 +103,7 @@ export default function Home() {
                     />
             )}
             
-            {(tbm !== "code" || tbm !== "")  && (
+            {(tbm === "docs" || tbm === "stf" || tbm === "blog")  && (
                 <div className="grid place-items-center pt-32 space-y-4">
                     <GiGearHammer className='text-6xl text-gray-700 font-bold' />
                     <div className="text-center text-3xl text-gray-700">
