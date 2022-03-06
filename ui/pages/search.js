@@ -83,7 +83,16 @@ export default function Home() {
                 </div>
             </nav>
 
-            {notFound && (
+            { (tbm === "code" || tbm === "") && (
+                <CodeSearchResult
+                    hits={hits}
+                    filter={filter}
+                    updateFilter={updateFilter}
+                    isLoading={isLoading}
+                    />
+            )}
+            
+            {(notFound && !isLoading) && (
                 <div className="grid place-items-center pt-32 space-y-8">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
@@ -94,15 +103,6 @@ export default function Home() {
                 </div>
             )}
 
-            { (tbm === "code" || tbm === "") && (
-                <CodeSearchResult
-                    hits={hits}
-                    filter={filter}
-                    updateFilter={updateFilter}
-                    isLoading={isLoading}
-                    />
-            )}
-            
             {(tbm === "docs" || tbm === "stf" || tbm === "blog")  && (
                 <div className="grid place-items-center pt-32 space-y-4">
                     <GiGearHammer className='text-6xl text-gray-700 font-bold' />
