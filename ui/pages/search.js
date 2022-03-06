@@ -67,8 +67,8 @@ export default function Home() {
             queryParam += `&filter[path]=${filter.path.join(",")}`
         }
 
-        axios.get(`https://heline.dev/api/search?q=${queryParam}`)
-            // axios.get(`/api/search?q=${queryParam}`)
+        // axios.get(`https://heline.dev/api/search?q=${queryParam}`)
+        axios.get(`/api/search?q=${queryParam}`)
             .then(res => {
                 if (res.data.hits.hits === null) {
                     setNotFound(true)
@@ -215,7 +215,6 @@ export default function Home() {
                     <div className="w-full min-w-[250px] max-w-[25%] py-8 space-y-4 pl-4">
                         <div className="space-y-2">
                             <h3 className="text-gray-800 uppercase">Repository</h3>
-                            {/* <input className="bg-white rounded border border-gray-200 w-full px-4 py-3 text-sm" type="text" placeholder="Filter repositories" /> */}
                             <div className="py-2 space-y-1">
                                 {renderArray(
                                     hits.facets?.repo?.buckets.map((item, index) => (
@@ -232,7 +231,6 @@ export default function Home() {
                         </div>
                         <div className="space-y-2 pt-2">
                             <h3 className="text-gray-800 uppercase">Path</h3>
-                            {/* <input className="bg-white rounded border border-gray-200 w-full px-4 py-3 text-sm" type="text" placeholder="Filter paths" /> */}
                             <div className="py-2 space-y-1">
                                 {renderArray(
                                     hits.facets?.path?.buckets.map((item, index) => (
@@ -329,7 +327,6 @@ export default function Home() {
                                                                     )
                                                                 })
                                                             )}
-                                                            {/* { i !== (item.content.snippet.length - 1) && <div className="bg-[#f1f0ec] h-6 my-[8px] -mx-2"></div>} */}
                                                         </>
                                                     )
                                                 })
