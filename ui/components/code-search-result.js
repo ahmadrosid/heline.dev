@@ -27,6 +27,10 @@ export default function CodeSearchResult({ hits, filter, updateFilter, isLoading
     let path = String(val)
     if (path.includes("/")) {
       let paths = path.split("/")
+      if (paths.length == 2) {
+        return path
+      }
+
       return paths.slice(Math.max(paths.length - 2, 1)).join("/")
     }
 

@@ -6,6 +6,7 @@ import SubNavigation from "../components/sub-navigation"
 import TopNavigation from '../components/top-navigation'
 import CodeSearchResult from '../components/code-search-result'
 import useSearchCode from '../lib/useSearchCode'
+import { GiGearHammer } from "react-icons/gi"
 
 export default function Home() {
     const router = useRouter()
@@ -92,12 +93,23 @@ export default function Home() {
                 </div>
             )}
 
-            <CodeSearchResult
-                hits={hits}
-                filter={filter}
-                updateFilter={updateFilter}
-                isLoading={isLoading}
-                />
+            { (tbm === "code" || tbm === "") && (
+                <CodeSearchResult
+                    hits={hits}
+                    filter={filter}
+                    updateFilter={updateFilter}
+                    isLoading={isLoading}
+                    />
+            )}
+            
+            {(tbm !== "code" || tbm !== "")  && (
+                <div className="grid place-items-center pt-32 space-y-4">
+                    <GiGearHammer className='text-6xl text-gray-700 font-bold' />
+                    <div className="text-center text-3xl text-gray-700">
+                        <span className='font-medium'>Coming soon!</span>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
