@@ -4,11 +4,42 @@ import { useEffect, useState } from 'react'
 import useDebounce from '../lib/useDebounce'
 import axios from 'axios'
 import renderArray from '../lib/render-array'
-import { BiSearchAlt } from "react-icons/bi"
+import { BiSearchAlt, BiCode, BiNote } from "react-icons/bi"
+import { BsStackOverflow } from "react-icons/bs"
+
+function SubNavigation({ updateMatchingSearch, tbm =  "" }) {
+    const active = (val) => {
+        if (val === tbm) {
+            return "flex items-center py-2 gap-2 border-b-[3px] border-emerald-500 text-emerald-600"
+        } else {
+            return "flex items-center py-2 gap-2 text-gray-700 border-white border-b-[3px] hover:border-emerald-500 hover:text-emerald-600"
+        }
+    }
+
+    return (
+        <div className='w-full flex'>
+            <div className="w-full max-w-[25%]"></div>
+            <div className='w-full px-8 pt-4 flex gap-5'>
+                <button onClick={() => updateMatchingSearch("code") } className={active(tbm === "" ? "" : "code")}>
+                    <BiCode className='text-xl' />
+                    <span className='text-xs'>Code</span>
+                </button>
+                <button onClick={() => updateMatchingSearch("docs") } className={active("docs")}>
+                    <BiNote className='text-xl' />
+                    <span className='text-xs'>Documents</span>
+                </button>
+                <button onClick={() => updateMatchingSearch("stf") } className={active("stf")}>
+                    <BsStackOverflow className='text-xl' />
+                    <span className='text-xs'>Stack Overflow</span>
+                </button>
+            </div>
+        </div>
+    )
+}
 
 export default function Home() {
     const router = useRouter()
-    const { q = "" } = router.query
+    const { q = "", tbm = "" } = router.query
     const [notFound, setNotFound] = useState(false)
     const [val, setVal] = useState("")
     const [hits, setHits] = useState(null)
@@ -22,7 +53,6 @@ export default function Home() {
         if (val == "") {
             return
         }
-        console.log(filter)
 
         if (filter == null) {
 
@@ -67,8 +97,8 @@ export default function Home() {
             queryParam += `&filter[path]=${filter.path.join(",")}`
         }
 
-        // axios.get(`https://heline.dev/api/search?q=${queryParam}`)
-        axios.get(`/api/search?q=${queryParam}`)
+        axios.get(`https://heline.dev/api/search?q=${queryParam}`)
+        // axios.get(`/api/search?q=${queryParam}`)
             .then(res => {
                 if (res.data.hits.hits === null) {
                     setNotFound(true)
@@ -148,6 +178,13 @@ export default function Home() {
         return val
     }
 
+    const updateMatchingSearch = (val) => {
+        const { pathname, query } = router
+        query.tbm = val;
+        router.push({ pathname, query });
+        console.log(query)
+    }
+
     useEffect(() => {
         if (q !== "" && !hits) {
             setVal(q)
@@ -164,39 +201,39 @@ export default function Home() {
                 <script defer data-domain="heline.dev" src="https://plausible.io/js/plausible.js"></script>
             </Head>
             <nav className="bg-white shadow-sm">
-                <div className="py-6 w-full max-w-7xl mx-auto flex items-center gap-4">
-                    <div className="w-full max-w-[25%]">
-                        <div className="text-emerald-500 flex items-center gap-x-2 px-4">
-                            {/* <img src="/favicon.png" className="w-8" /> */}
-                            <a href="/" >
-                                {/* <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-600">
-                                    heline
-                                </span> */}
-                                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white sm:text-center inline-flex items-center select-none">
-                                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-600">
-                                        heline
-                                    </span>
-                                    <span>.</span>
-                                    <span className="text-gray-700">dev</span>
-                                </h1>
-                            </a>
+                <div className="pt-6 w-full max-w-7xl mx-auto">
+                    <div className='flex items-center gap-4 w-full'>
+                        <div className="w-full max-w-[25%]">
+                            <div className="text-emerald-500 flex items-center gap-x-2 px-4">
+                                <a href="/">
+                                    <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white sm:text-center inline-flex items-center select-none">
+                                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-600">
+                                            heline
+                                        </span>
+                                        <span>.</span>
+                                        <span className="text-gray-700">dev</span>
+                                    </h1>
+                                </a>
+                            </div>
+                        </div>
+                        <div className="flex px-4 rounded shadow-sm border bg-white items-center justify-between w-full mr-8 mx-4">
+                            <span className="text-gray-500 select-none text-xl pr-4"><BiSearchAlt /></span>
+
+                            <input
+                                onChange={(el) => {
+                                    setVal(encodeURIComponent(el.target.value))
+                                }}
+                                autoFocus={true}
+                                spellCheck={false}
+                                defaultValue={q}
+                                type="text"
+                                placeholder="Search"
+                                className="py-3 flex-grow text-gray-900 dark:bg-black dark:text-white border-none outline-none focus:outline-none focus:ring-0 autofill:shadow-fill-white dark:autofill:shadow-fill-black"
+                            />
                         </div>
                     </div>
-                    <div className="flex px-4 rounded shadow-sm border bg-white items-center justify-between w-full mr-8 mx-4">
-                        <span className="text-gray-500 select-none text-xl pr-4"><BiSearchAlt /></span>
-
-                        <input
-                            onChange={(el) => {
-                                setVal(encodeURIComponent(el.target.value))
-                            }}
-                            autoFocus={true}
-                            spellCheck={false}
-                            defaultValue={q}
-                            type="text"
-                            placeholder="Search"
-                            className="py-3 flex-grow text-gray-900 dark:bg-black dark:text-white border-none outline-none focus:outline-none focus:ring-0 autofill:shadow-fill-white dark:autofill:shadow-fill-black"
-                        />
-                    </div>
+                    
+                    <SubNavigation updateMatchingSearch={updateMatchingSearch} tbm={tbm}/>
                 </div>
             </nav>
             {notFound && (
