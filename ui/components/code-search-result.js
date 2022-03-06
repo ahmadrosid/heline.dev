@@ -1,6 +1,6 @@
 import renderArray from '../lib/render-array'
 
-export default function CodeSearchResult({ hits, filter, updateFilter }) {
+export default function CodeSearchResult({ hits, filter, updateFilter, isLoading = false }) {
 
   const updateFilterRepo = (index) => {
     if (hits.facets.repo.buckets.length == 0) {
@@ -35,9 +35,19 @@ export default function CodeSearchResult({ hits, filter, updateFilter }) {
 
   return (
     <>
+      {isLoading && (
+        <div class="flex flex-col">
+          <div class="relative w-full bg-gray-200">
+            <div style={{ width: "100%" }} class="absolute top-0 h-1 shim-red"></div>
+          </div>
+        </div>
+      )}
+
+      {!isLoading && (<div className='h-1' />)}
+
       {hits && (
         <div className="w-full max-w-7xl mx-auto flex">
-          <div className="w-full min-w-[250px] max-w-[25%] py-8 space-y-4 pl-4">
+          <div className="w-full min-w-[250px] max-w-[25%] py-4 space-y-4 pl-4">
             <div className="space-y-2">
               <h3 className="text-gray-800 uppercase">Repository</h3>
               <div className="py-2 space-y-1">
@@ -87,7 +97,7 @@ export default function CodeSearchResult({ hits, filter, updateFilter }) {
               </div>
             </div>
           </div>
-          <div className="w-full max-w-[75%] p-8 pr-6">
+          <div className="w-full max-w-[75%] py-4 px-8 pr-6">
             <div className="pb-2">
               <p className="text-gray-700">Total: {hits.total}</p>
             </div>

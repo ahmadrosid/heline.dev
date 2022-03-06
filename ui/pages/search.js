@@ -13,13 +13,14 @@ export default function Home() {
     const [notFound, setNotFound] = useState(false)
     const [val, setVal] = useState("")
     const [hits, setHits] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
     const [filter, setFilter] = useState({
         repo: [],
         lang: [],
         path: []
     })
 
-    const fetchData = useSearchCode({ setHits, setNotFound })
+    const fetchData = useSearchCode({ setHits, setNotFound, setIsLoading })
 
     const [, cancel] = useDebounce(
         () => {
@@ -91,7 +92,12 @@ export default function Home() {
                 </div>
             )}
 
-            <CodeSearchResult hits={hits} filter={filter} updateFilter={updateFilter} />
+            <CodeSearchResult
+                hits={hits}
+                filter={filter}
+                updateFilter={updateFilter}
+                isLoading={isLoading}
+                />
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
-const useSearchCode = ({ setHits, setNotFound }) => {
+const useSearchCode = ({ setHits, setNotFound, setIsLoading }) => {
   const router = useRouter()
   const fetchData = (val, filter) => {
 
@@ -51,9 +51,11 @@ const useSearchCode = ({ setHits, setNotFound }) => {
       queryParam += `&filter[path]=${filter.path.join(",")}`
     }
 
+    setIsLoading(true)
     axios.get(`https://heline.dev/api/search?q=${queryParam}`)
       // axios.get(`/api/search?q=${queryParam}`)
       .then(res => {
+        setIsLoading(false)
         if (res.data.hits.hits === null) {
           setNotFound(true)
           setHits(null)
@@ -63,7 +65,7 @@ const useSearchCode = ({ setHits, setNotFound }) => {
         }
       })
       .catch(e => {
-        console.error(e)
+        setIsLoading(false)
         setNotFound(true)
         setHits(null)
       })
