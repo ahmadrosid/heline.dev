@@ -14,6 +14,28 @@ type DocsetQuery struct {
 	Query string
 }
 
+func GetDocsetByID(id string) ([]byte, error) {
+	u, _ := url.Parse("http://localhost:8984/solr/docset/get")
+	q := u.Query()
+	q.Set("ids", id)
+	u.RawQuery = q.Encode()
+
+	req, _ := http.NewRequest("GET", u.String(), nil)
+
+	req.Header.Add("Content-Type", "application/json")
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		println("ERROR", err.Error())
+		return nil, err
+	}
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+
+	return body, nil
+}
+
 func DocsetSearch(query DocsetQuery) ([]byte, error) {
 	u, _ := url.Parse("http://localhost:8984/solr/docset/select")
 	q := u.Query()

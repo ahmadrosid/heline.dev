@@ -61,6 +61,7 @@ type QueryParamFilter struct {
 type QueryParam struct {
 	Query string   `queryparam:"q"`
 	Tbm   string   `queryparam:"tbm"`
+	ID    string   `queryparam:"id"`
 	Path  []string `queryparam:"filter[path]"`
 	Lang  []string `queryparam:"filter[lang]"`
 	Repo  []string `queryparam:"filter[repo]"`
@@ -119,4 +120,17 @@ type DocsetData struct {
 
 type DocsetSearchResult struct {
 	Response DocsetHits `json:"docs"`
+}
+
+// Docset by ID
+type DocsetDetail struct {
+	Response struct {
+		Docs []struct {
+			ID       string   `json:"id"`
+			FileName string   `json:"file_name"`
+			Document string   `json:"document"`
+			Title    string   `json:"title"`
+			Content  []string `json:"content"`
+		} `json:"docs"`
+	} `json:"response"`
 }
