@@ -10,53 +10,37 @@ import (
 	"github.com/ahmadrosid/heline/utils"
 )
 
-type SolrQuery struct {
-	Query  string
-	Filter []string
+type DocsetQuery struct {
+	Query string
 }
 
-func Search(query SolrQuery) ([]byte, error) {
-	// u, _ := url.Parse("https://heline.dev/solr/heline/select")
-	u, _ := url.Parse("http://localhost:8984/solr/heline/select")
+func DocsetSearch(query DocsetQuery) ([]byte, error) {
+	u, _ := url.Parse("http://localhost:8984/solr/docset/select")
 	q := u.Query()
 	q.Set("hl", "on")
 	q.Set("hl.fl", "content")
 	q.Set("hl.simple.pre", "<mark>")
 	q.Set("hl.simple.post", "</mark>")
 	q.Set("hl.snippets", "3")
-	q.Set("hl.usePhraseHighlighter", "true")
-	q.Set("hl.requireFieldMatch", "true")
-	q.Set("hl.highlightMultiTerm", "true")
-	q.Set("hl.mergeContiguous", "true")
+	// q.Set("hl.usePhraseHighlighter", "true")
+	// q.Set("hl.requireFieldMatch", "true")
+	// q.Set("hl.highlightMultiTerm", "true")
+	// q.Set("hl.mergeContiguous", "true")
 	q.Set("hl.fragsize", "3500")
-	q.Set("hl.maxAnalyzedChars", "100000")
+	// q.Set("hl.maxAnalyzedChars", "100000")
 	// q.Set("hl.method", "unified")
 	u.RawQuery = q.Encode()
 
 	data := Map{
 		"query":  "content:" + query.Query,
-		"fields": "id,file_id,repo,lang,branch,owner_id",
+		"fields": "id,file_name,title,document",
 		"facet": Map{
-			"lang": Map{
+			"document": Map{
 				"type":  "terms",
-				"field": "lang",
+				"field": "document",
 				"limit": 10,
 			},
-			"path": Map{
-				"type":  "terms",
-				"field": "path",
-				"limit": 8,
-			},
-			"repo": Map{
-				"type":  "terms",
-				"field": "repo",
-				"limit": 7,
-			},
 		},
-	}
-
-	if query.Filter != nil {
-		data["filter"] = query.Filter
 	}
 
 	queryData, _ := json.Marshal(data)

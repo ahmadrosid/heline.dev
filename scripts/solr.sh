@@ -28,9 +28,18 @@ if [ "$1" == $PREPARE ]; then
     sudo cp -r "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/configsets/_default" "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline"
   fi
 
+  # Copy initial solr config file for docset index if not exists.
+  if ! test -d "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/docset"; then
+    sudo cp -r "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/configsets/_default" "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/docset"
+  fi
+
   # Create core
   curl --request GET \
     --url "$SOLR_BASE_URL/solr/admin/cores?action=CREATE&name=heline&instanceDir=heline&config=solrconfig.xml&dataDir=data"
+
+  # Create core
+  curl --request GET \
+    --url "$SOLR_BASE_URL/solr/admin/cores?action=CREATE&name=docset&instanceDir=docset&config=solrconfig.xml&dataDir=data"
 
   # Create text_html field schema
   curl --request POST \
@@ -187,6 +196,12 @@ if [ "$1" == $CLEAN ]; then
   curl --request GET \
     --url "$SOLR_BASE_URL/solr/admin/cores?action=UNLOAD&core=heline"
 
+
+  # Delete core
+  curl --request GET \
+    --url "$SOLR_BASE_URL/solr/admin/cores?action=UNLOAD&core=docset"
+
   # Delete solr folder
   sudo rm -rf "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline"
+  sudo rm -rf "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/docset"
 fi

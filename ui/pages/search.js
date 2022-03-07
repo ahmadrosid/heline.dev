@@ -6,7 +6,9 @@ import SubNavigation from "../components/sub-navigation"
 import TopNavigation from '../components/top-navigation'
 import CodeSearchResult from '../components/code-search-result'
 import useSearchCode from '../lib/useSearchCode'
+import useSearchDocument from '../lib/useSearchDocument'
 import { IoRocketOutline } from "react-icons/io5"
+import DocSearchResult from '../components/docs-search-result'
 
 export default function Home() {
     const router = useRouter()
@@ -14,6 +16,7 @@ export default function Home() {
     const [notFound, setNotFound] = useState(false)
     const [val, setVal] = useState("")
     const [hits, setHits] = useState(null)
+    const [hitsDocs, setDocsHits] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
     const [filter, setFilter] = useState({
         repo: [],
@@ -21,14 +24,24 @@ export default function Home() {
         path: []
     })
 
-    const fetchData = useSearchCode({ setHits, setNotFound, setIsLoading })
+    const logtHits = (val) => {
+        console.log(val);
+    }
+
+    const fetchCodeSearch = useSearchCode({ setHits, setNotFound, setIsLoading })
+    const fetchDocumentSearch = useSearchDocument({ setHits: setDocsHits, setNotFound, setIsLoading })
 
     const [, cancel] = useDebounce(
         () => {
             if (val == '') {
                 return;
             }
-            fetchData(val, filter)
+            if (tbm === "code" || tbm === "") {
+                fetchCodeSearch(val, filter)
+            }
+            if (tbm === "docs") {
+                fetchDocumentSearch(val)
+            }
         },
         500,
         [val]
@@ -41,13 +54,13 @@ export default function Home() {
             if (prev[filterName]?.includes(filter)) {
                 const newVal = prev[filterName].filter(item => item != filter)
                 newFilter[filterName] = newVal
-                fetchData(val, newFilter)
+                fetchCodeSearch(val, newFilter)
                 return newFilter
             }
 
             newFilter[filterName]?.push(filter)
             val["tbm"] = tbm;
-            fetchData(val, newFilter)
+            fetchCodeSearch(val, newFilter)
             return newFilter
         })
     }
@@ -56,13 +69,17 @@ export default function Home() {
         const { pathname, query } = router
         query.tbm = val;
         router.push({ pathname, query });
-        console.log(query)
     }
 
     useEffect(() => {
         if (q !== "" && !hits) {
             setVal(q)
-            fetchData(q, null)
+            if (tbm === "code" || tbm === "") {
+                fetchCodeSearch(val, null)
+            }
+            if (tbm === "docs") {
+                fetchDocumentSearch(val)
+            }
         }
     }, [q])
 
@@ -83,15 +100,22 @@ export default function Home() {
                 </div>
             </nav>
 
-            { (tbm === "code" || tbm === "") && (
+            {(tbm === "code" || tbm === "") && (
                 <CodeSearchResult
                     hits={hits}
                     filter={filter}
                     updateFilter={updateFilter}
                     isLoading={isLoading}
-                    />
+                />
             )}
-            
+
+            {(tbm === "docs" ) && (
+                <DocSearchResult
+                    hits={hitsDocs}
+                    isLoading={isLoading}
+                />
+            )}
+
             {(notFound && !isLoading) && (
                 <div className="grid place-items-center pt-32 space-y-8">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -103,7 +127,7 @@ export default function Home() {
                 </div>
             )}
 
-            {(tbm === "docs" || tbm === "stf" || tbm === "blog")  && (
+            {(tbm === "docsx" || tbm === "stf" || tbm === "blog") && (
                 <div className="grid place-items-center pt-32 space-y-4">
                     <IoRocketOutline className='text-9xl text-emerald-400' />
                     <div className="text-center text-4xl text-gray-600">

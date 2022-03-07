@@ -40,9 +40,9 @@ export default function CodeSearchResult({ hits, filter, updateFilter, isLoading
   return (
     <>
       {isLoading && (
-        <div class="flex flex-col">
-          <div class="relative w-full bg-gray-200">
-            <div style={{ width: "100%" }} class="absolute top-0 h-1 shim-red"></div>
+        <div className="flex flex-col">
+          <div className="relative w-full bg-gray-200">
+            <div style={{ width: "100%" }} className="absolute top-0 h-1 shim-red"></div>
           </div>
         </div>
       )}
@@ -114,12 +114,12 @@ export default function CodeSearchResult({ hits, filter, updateFilter, isLoading
                 return (
                   <div className="py-2">
                     <div>
-                      <a target="_blank" href={`https://github.com/${item.repo.raw}`} className="flex gap-2 items-center">
+                      <a target="_blank" href={`https://github.com/${item.repo?.raw}`} className="flex gap-2 items-center">
                         <img className="repo-avatar rounded-full border" src={`https://avatars.githubusercontent.com/u/${item.owner_id.raw}?s=60&amp;v=4`} alt="" width="22" height="22" />
-                        <span className="text-gray-700 font-light">{item.repo.raw}</span>
+                        <span className="text-gray-700 font-light">{item.repo?.raw}</span>
                       </a>
 
-                      <a target="_blank" href={`https://github.com/${item.repo.raw}/blob/${item.branch.raw}/${item.file_id.raw.split("/").slice(4, 100).join("/")}`} className="flex gap-1 items-center">
+                      <a target="_blank" href={`https://github.com/${item.repo?.raw}/blob/${item.branch.raw}/${item.file_id.raw.split("/").slice(4, 100).join("/")}`} className="flex gap-1 items-center">
                         <span className="text-emerald-500 pl-8 truncate">{item.file_id.raw.split("/").slice(2, 100).join("/")}</span>
                       </a>
                     </div>

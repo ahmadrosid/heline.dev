@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+type Map map[string]interface{}
+
 func Insert(payload io.Reader) error {
 
 	url := "http://localhost:8984/solr/heline/update?&commitWithin=1000&overwrite=true&wt=json"
