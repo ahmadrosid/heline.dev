@@ -1,31 +1,28 @@
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
-const useSearchDocument = ({ setHits, setNotFound, setIsLoading }) => {
+const useGetDocumentByID = ({ setHits, setNotFound, setIsLoading }) => {
   const router = useRouter()
-  const fetchData = (val) => {
 
-    if (val == "") {
+  const fetchData = (id) => {
+
+    if (id == "") {
       return
     }
 
-    let queryParam = val
-    if (!queryParam.includes("&tbm=docs")) {
-      queryParam = queryParam + "&tbm=docs"
-    }
-
+    let queryParam = `?tbm=docs&id=${id}`
     setIsLoading(true)
 
     // axios.get(`https://heline.dev/api/search?q=${queryParam}&tbm=docs`)
-    axios.get(`http://localhost:8000/api/search?q=${queryParam}`)
+    axios.get(`http://localhost:8000/api/search${queryParam}`)
       .then(res => {
         setIsLoading(false)
-        if (res.data.docs.hits === null) {
+        if (res.data === null) {
           setNotFound(true)
           setHits(null)
         } else {
           setNotFound(false)
-          setHits(res.data.docs)
+          setHits(res.data)
         }
       })
       .catch(e => {
@@ -36,11 +33,11 @@ const useSearchDocument = ({ setHits, setNotFound, setIsLoading }) => {
       })
 
     if (typeof window !== 'undefined') {
-      router.push(`search?q=${queryParam}`)
+      // router.push(`search${queryParam}`)
     }
   }
 
   return fetchData
 }
 
-export default useSearchDocument
+export default useGetDocumentByID

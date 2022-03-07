@@ -27,3 +27,21 @@
       opacity: 0;
   }
 }
+
+.highlight-docset {
+  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+  color: #24292f;
+  font-size: 12px;
+  line-height: 1rem;
+  @apply bg-white p-2 border border-zinc-200 rounded w-full;
+}
+
+.modal-docset {
+  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+  color: #24292f;
+  font-size: 12px;
+  word-wrap: normal;
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1rem;
+}

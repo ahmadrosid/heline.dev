@@ -24,10 +24,6 @@ export default function Home() {
         path: []
     })
 
-    const logtHits = (val) => {
-        console.log(val);
-    }
-
     const fetchCodeSearch = useSearchCode({ setHits, setNotFound, setIsLoading })
     const fetchDocumentSearch = useSearchDocument({ setHits: setDocsHits, setNotFound, setIsLoading })
 
@@ -65,10 +61,13 @@ export default function Home() {
         })
     }
 
-    const updateMatchingSearch = (val) => {
+    const updateMatchingSearch = (tbm) => {
         const { pathname, query } = router
-        query.tbm = val;
+        query.tbm = tbm;
         router.push({ pathname, query });
+        if (hitsDocs === null) {
+            fetchDocumentSearch(val)
+        }
     }
 
     useEffect(() => {

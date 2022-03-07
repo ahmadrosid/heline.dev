@@ -161,7 +161,7 @@ export default function CodeSearchResult({ hits, filter, updateFilter, isLoading
                                       <table className="highlight-table">
                                         <tbody dangerouslySetInnerHTML={{ __html: source }}></tbody>
                                       </table>
-                                      {(i < contents.length && parentIndex < (item.content.snippet.length - 1)) && <div className="bg-zinc-100 h-8 my-[8px] -mx-2"></div>}
+                                      {(i < contents.length && parentIndex < (item.content.snippet.length - 1)) && <div className="bg-zinc-100 h-6 my-[8px] -mx-2"></div>}
                                     </>
                                   )
                                 })
