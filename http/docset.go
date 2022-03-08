@@ -12,7 +12,6 @@ func handleGetDocsetByID(w http.ResponseWriter, id string) {
 	enc := json.NewEncoder(w)
 
 	result, err := solr.GetDocsetByID(id)
-
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		enc.Encode(Map{
@@ -46,8 +45,8 @@ func handleGetDocsetByID(w http.ResponseWriter, id string) {
 
 func handleSearchDocset(w http.ResponseWriter, q string) {
 	enc := json.NewEncoder(w)
-	result, err := solr.DocsetSearch(solr.DocsetQuery{Query: q})
 
+	result, err := solr.DocsetSearch(solr.DocsetQuery{Query: q})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		enc.Encode(Map{
@@ -66,7 +65,7 @@ func handleSearchDocset(w http.ResponseWriter, q string) {
 		return
 	}
 
-	println("hints:", data.Response.NumFound, q)
+	println("hits:", data.Response.NumFound, q)
 
 	w.Header().Set("Content-Type", "application/json")
 	var content []DocsetData
@@ -93,6 +92,7 @@ func handleSearchDocset(w http.ResponseWriter, q string) {
 			},
 		})
 	}
+
 	enc.Encode(DocsetSearchResult{
 		Response: DocsetHits{
 			Hits:   content,
