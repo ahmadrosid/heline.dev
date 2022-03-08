@@ -68,6 +68,9 @@ export default function Home() {
         if (hitsDocs === null) {
             fetchDocumentSearch(val)
         }
+        if (hits === null) {
+            fetchCodeSearch(val)
+        }
     }
 
     useEffect(() => {

@@ -1,7 +1,9 @@
+.PHONY: ui 
+
 install:
 	bash build.sh
 
-next:
+ui:
 	bash scripts/run.sh ui
 
 go:

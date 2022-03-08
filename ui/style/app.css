@@ -39,6 +39,15 @@
   @apply bg-white p-2 border border-zinc-200 rounded w-full max-w-6xl;
 }
 
+
+.highlight-docset summary {
+  display: block;
+}
+
+.highlight-docset li {
+  @apply flex
+}
+
 .modal-docset {
   font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
   color: #24292f;
