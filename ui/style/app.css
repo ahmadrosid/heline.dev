@@ -39,7 +39,6 @@
   @apply bg-white p-2 border border-zinc-200 rounded w-full max-w-6xl;
 }
 
-
 .highlight-docset summary {
   display: block;
 }

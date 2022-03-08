@@ -75,6 +75,7 @@ function DocHighlight({ data }) {
           </div>
         </Modal>
       )}
+
       <div className="w-full max-w-7xl mx-auto flex py-2">
         <div className="w-full min-w-[250px] max-w-[25%] py-4 space-y-4 pl-4">
           <div className="space-y-1">
@@ -104,7 +105,9 @@ function DocHighlight({ data }) {
               {!item.link.raw && (
                 <a onClick={() => getDetailDocs(item)} className="text-gray-500 text-sm truncate max-w-[250px] inline-block -mb-2 cursor-pointer">{item.id.raw}</a>
               )}
+              
               <h2 className='text-gray-800 font-mono font-semibold text-xl'>{item.title?.raw}</h2>
+
               <div
                 onClick={() => getDetailDocs(item)}
                 className='highlight-docset cursor-pointer'>

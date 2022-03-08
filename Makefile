@@ -6,6 +6,9 @@ install:
 ui:
 	bash scripts/run.sh ui
 
+gen:
+	bash scripts/run.sh gen
+
 go:
 	go build && ./heline server start
 

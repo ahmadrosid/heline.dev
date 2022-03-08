@@ -45,6 +45,10 @@ if [ "$1" == "production" ]; then
   ./heline server start &>/dev/null & disown;
 fi
 
-if [ "$1" == "scrape" ]; then
-  ./heline scrape github $2 &>/dev/null & disown;
+if [ "$1" == "gen" ]; then
+  cd ui && yarn build
+  cd ..
+  git add .
+  git commit -m 'chore: regenerate static file'
+  git push origin HEAD
 fi
