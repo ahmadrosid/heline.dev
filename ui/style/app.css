@@ -33,7 +33,10 @@
   color: #24292f;
   font-size: 12px;
   line-height: 1rem;
-  @apply bg-white p-2 border border-zinc-200 rounded w-full;
+  word-wrap: normal;
+  white-space: pre-wrap;
+  word-break: break-all;
+  @apply bg-white p-2 border border-zinc-200 rounded w-full max-w-6xl;
 }
 
 .modal-docset {

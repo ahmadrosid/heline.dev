@@ -14,8 +14,20 @@ function DocHighlight({ data }) {
   const [isLoading, setIsLoading] = useState(null)
   const fetchDocumentByID = useGetDocumentByID({ setHits, setNotFound, setIsLoading })
 
-  const getDetailDocs = (id) => {
-    fetchDocumentByID(id)
+  const getDetailDocs = ({ id, link }) => {
+    if (link.raw !== "") {
+      let url = link.raw
+      if (!url.includes("https://")) {
+        url = "https://" + link.raw
+      }
+
+      if (window) {
+        window.open(url, '_blank').focus();
+        return
+      }
+    }
+
+    fetchDocumentByID(id.raw)
   }
 
   const useKeyPress = (targetKey) => {
@@ -42,7 +54,7 @@ function DocHighlight({ data }) {
     return keyPressed;
   }
 
-  const onEscPress = useKeyPress("Escape")
+  const _ = useKeyPress("Escape")
   
   return (
     <>
@@ -82,12 +94,19 @@ function DocHighlight({ data }) {
             </div>
           </div>
         </div>
-        <div className='px-4'>
+        <div className='px-8'>
           {renderArray(data.hits.map(item => (
-            <div className='py-2'>
-              <h2 className='text-gray-800 font-mono font-semibold pb-1 text-xl'>{item.title?.raw}</h2>
+            <div className='py-2 space-y-1 pb-2'>
+              {item.link.raw && (
+                <a href={`https://${item.link.raw}`} target="_blank" className="text-gray-500 text-sm truncate max-w-[250px] inline-block -mb-2 cursor-pointer">{item.id.raw}</a>
+              )}
+
+              {!item.link.raw && (
+                <a onClick={() => getDetailDocs(item)} className="text-gray-500 text-sm truncate max-w-[250px] inline-block -mb-2 cursor-pointer">{item.id.raw}</a>
+              )}
+              <h2 className='text-gray-800 font-mono font-semibold text-xl'>{item.title?.raw}</h2>
               <div
-                onClick={() => getDetailDocs(item.id.raw)}
+                onClick={() => getDetailDocs(item)}
                 className='highlight-docset cursor-pointer'>
                 {renderArray(item.content.snippet.map((source, i) => (
                   <>

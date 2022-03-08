@@ -43,19 +43,19 @@ func DocsetSearch(query DocsetQuery) ([]byte, error) {
 	q.Set("hl.fl", "content")
 	q.Set("hl.simple.pre", "<mark>")
 	q.Set("hl.simple.post", "</mark>")
-	q.Set("hl.snippets", "3")
+	q.Set("hl.snippets", "2")
 	// q.Set("hl.usePhraseHighlighter", "true")
 	// q.Set("hl.requireFieldMatch", "true")
 	// q.Set("hl.highlightMultiTerm", "true")
 	// q.Set("hl.mergeContiguous", "true")
-	q.Set("hl.fragsize", "3500")
+	q.Set("hl.fragsize", "500")
 	// q.Set("hl.maxAnalyzedChars", "100000")
 	// q.Set("hl.method", "unified")
 	u.RawQuery = q.Encode()
 
 	data := Map{
 		"query":  "content:" + query.Query,
-		"fields": "id,file_name,title,document",
+		"fields": "id,file_name,title,link,document",
 		"facet": Map{
 			"document": Map{
 				"type":  "terms",
