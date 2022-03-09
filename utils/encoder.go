@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-
-	goccy_json "github.com/goccy/go-json"
 )
 
 type Marshaler func(interface{}) ([]byte, error)
@@ -38,7 +36,7 @@ func (sw *StreamEncoder) EncodeRow(row interface{}) error {
 	if !sw.first {
 		_, err := sw.buf.Write(commaNl)
 		if err != nil {
-			return fmt.Errorf("Failed to write comma: %s", err)
+			return fmt.Errorf("failed to write comma: %s", err)
 		}
 	}
 
@@ -164,9 +162,9 @@ func NewStdlibStreamEncoder(out io.Writer, array bool) *StreamEncoder {
 }
 
 func Encode(out io.Writer, obj interface{}) error {
-	return EncodeGeneric(out, obj, goccy_json.Marshal)
+	return EncodeGeneric(out, obj, json.Marshal)
 }
 
 func NewStreamEncoder(out io.Writer, array bool) *StreamEncoder {
-	return NewGenericStreamEncoder(out, goccy_json.Marshal, array)
+	return NewGenericStreamEncoder(out, json.Marshal, array)
 }
