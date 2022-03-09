@@ -30,6 +30,7 @@ mark {
 .hl-num::before {
     content: attr(data-line);
     margin-right: 4px;
+    width: max-content;
 }
 
 /* Markup Heading */
