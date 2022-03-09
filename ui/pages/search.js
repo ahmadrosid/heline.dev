@@ -55,7 +55,6 @@ export default function Home() {
             }
 
             newFilter[filterName]?.push(filter)
-            val["tbm"] = tbm;
             fetchCodeSearch(val, newFilter)
             return newFilter
         })
