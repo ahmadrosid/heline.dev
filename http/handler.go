@@ -98,7 +98,8 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	q := strings.Replace(param.Query, "*", "\\*", -1)
 	q = strings.Replace(q, "\"", "\\\"", -1)
 	q = strings.Replace(q, "'", "\\'", -1)
-	q = "\"" + q + "\""
+	q = "*" + q + "*"
+	println(q)
 
 	if param.ID != "" && param.Tbm == "docs" {
 		handleGetDocsetByID(w, param.ID)
