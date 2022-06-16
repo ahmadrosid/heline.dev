@@ -19,7 +19,7 @@ type ServerCommand struct {
 func (c *ServerCommand) Run(args []string) int {
 	handler := ghttp.Handler()
 
-	port := "8000"
+	port := "80"
 	server := &http.Server{
 		Handler:           handler,
 		ReadHeaderTimeout: 10 * time.Second,

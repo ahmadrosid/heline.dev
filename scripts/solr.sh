@@ -60,10 +60,7 @@ if [ "$1" == $PREPARE ]; then
         ],
         "tokenizer":{
           "class": "solr.WhitespaceTokenizerFactory",
-          "rule": "java"
-        },
-        "tokenizer":{
-          "class": "solr.NGramTokenizerFactory"
+          "rule": "unicode"
         },
         "filters": [
           {
