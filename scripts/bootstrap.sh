@@ -11,8 +11,8 @@ fi
 # Setup solr
 if ! test -d "$SOLR_BUILD_FOLDER"; then
   mkdir $SOLR_BUILD_FOLDER
-  echo "Solr $SOLR_BUILD_FOLDER does not exist, downloading..."
-  curl $SOLR_DOWNLOAD_URL -o "$SOLR_BUILD_FOLDER/$SOLR_VERSION.tgz"
+  echo "Folder $SOLR_BUILD_FOLDER does not exist, downloading..."
+  wget -O "$SOLR_BUILD_FOLDER/$SOLR_VERSION.tgz" $SOLR_DOWNLOAD_URL
   tar zxvf "$SOLR_BUILD_FOLDER/$SOLR_VERSION.tgz"
   mv ./solr-$SOLR_VERSION $SOLR_BUILD_FOLDER
 fi
