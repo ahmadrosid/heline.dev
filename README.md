@@ -28,3 +28,13 @@ Prepare solr index
 ```bash
 bash scripts/solr.sh prepare
 ```
+
+Run production mode
+```bash
+bash scripts/run.sh production
+```
+
+Reset production mode - this will delete the ES data and run the indexer.
+```bash
+bash scripts/run.sh reset
+```
