@@ -18,3 +18,13 @@ Install required dependencies.
 ```bash
 bash scripts/bootstrap.sh
 ```
+
+Start solr
+```bash
+bash scripts/solr.sh start
+```
+
+Prepare solr index
+```bash
+bash scripts/solr.sh prepare
+```

@@ -23,6 +23,10 @@ if [ "$1" == "ui" ]; then
   start_ui
 fi
 
+if [ "$1" == "solr start" ]; then
+  start_ui
+fi
+
 if [ "$1" == "stop" ]; then
   lsof -i tcp:8984 | grep LISTEN | awk '{print $2}' | xargs kill -9
   lsof -i tcp:8000 | grep LISTEN | awk '{print $2}' | xargs kill -9
