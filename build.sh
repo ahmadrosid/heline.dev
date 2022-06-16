@@ -1,6 +1,9 @@
 #!/bin/bash
 cd ui
-yarn install
+if [ ! -d "node_modules" ]; then
+    yarn install
+fi
+
 yarn build
 cd ..
 go build
