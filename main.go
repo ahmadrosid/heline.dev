@@ -13,7 +13,7 @@ func main() {
 	context := nullitics.New(option)
 	handler := ghttp.Handler(context.Report(nil))
 
-	port := "80"
+	port := "8000"
 
 	fmt.Printf("🚀 Starting server on http://localhost:%s\n", port)
 	err := http.ListenAndServe(":"+port, context.Collect(handler))
