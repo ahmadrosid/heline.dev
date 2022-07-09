@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/mitchellh/cli v1.1.2
+	github.com/nullitics/nullitics v0.0.0-20220513114112-3cfbd4af124b // indirect
 	github.com/tomwright/queryparam/v4 v4.1.0
 	golang.org/x/sys v0.0.0-20210423082822-04245dca01da // indirect
 )

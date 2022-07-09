@@ -7,6 +7,11 @@
     Code search for modern Developers.
 </p>
 
+## Requirements
+- rust
+- golang
+- nodejs >= 16
+- java >= 8
 
 ## Development
 Run script build to run dev mode locally.

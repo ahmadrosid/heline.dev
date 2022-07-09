@@ -21,7 +21,7 @@ import (
 //go:embed dist/_next/static/*/*.js
 var nextFS embed.FS
 
-func Handler() http.Handler {
+func Handler(analytic http.Handler) http.Handler {
 	index, err := fs.Sub(nextFS, "dist")
 	if err != nil {
 		log.Fatal(err)
@@ -56,6 +56,7 @@ func Handler() http.Handler {
 		http.Redirect(w, r, query, http.StatusSeeOther)
 	})
 	mux.HandleFunc("/api/search", handleSearch)
+	mux.Handle("/analytic", analytic)
 
 	return wrapCORSHandler(mux, &CorsConfig{
 		allowedOrigin: "*",
