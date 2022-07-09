@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	option := nullitics.BlacklistPrefix([]string{"/_next/"}...)
+	option := nullitics.BlacklistPrefix([]string{"/_next/", "favicon.png"}...)
 	context := nullitics.New(option)
 	handler := ghttp.Handler(context.Report(nil))
 
