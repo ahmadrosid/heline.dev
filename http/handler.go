@@ -56,7 +56,7 @@ func Handler(analytic http.Handler) http.Handler {
 		http.Redirect(w, r, query, http.StatusSeeOther)
 	})
 	mux.HandleFunc("/api/search", handleSearch)
-	mux.Handle("/analytic", analytic)
+	mux.Handle("/stats", analytic)
 
 	return wrapCORSHandler(mux, &CorsConfig{
 		allowedOrigin: "*",
