@@ -46,7 +46,7 @@ fi
 
 if [ "$1" == "production" ]; then
   . scripts/solr.sh start
-  ./heline server start &>/dev/null & disown;
+  ./heline &>/dev/null & disown;
 fi
 
 if [ "$1" == "gen" ]; then
