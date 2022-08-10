@@ -10,67 +10,6 @@ import (
 	"github.com/ahmadrosid/heline/core/utils"
 )
 
-// Docsets: models
-
-type DocsetSolrResult struct {
-	Highlight map[string]entity.Data `json:"highlighting"`
-	Response  DocsetSolrDoc          `json:"response"`
-	Facet     DocsetSolrFacet        `json:"facets"`
-}
-
-type DocsetSolrDoc struct {
-	Docs     []DocsetSolrField `json:"docs"`
-	NumFound int               `json:"numFound"`
-}
-
-type DocsetSolrField struct {
-	ID       string `json:"id"`
-	Title    string `json:"title"`
-	FileName string `json:"file_name"`
-	Document string `json:"document"`
-	Link     string `json:"link"`
-}
-
-type DocsetSolrFacet struct {
-	Count    int `json:"count"`
-	Document struct {
-		Buckets entity.SolrBuckets `json:"buckets"`
-	} `json:"document"`
-}
-
-type DocsetHits struct {
-	Hits   []DocsetData    `json:"hits"`
-	Facets DocsetSolrFacet `json:"facets"`
-	Total  int             `json:"total"`
-}
-
-type DocsetData struct {
-	ID       entity.Map `json:"id"`
-	Title    entity.Map `json:"title"`
-	FileName entity.Map `json:"file_name"`
-	Document entity.Map `json:"document"`
-	Content  entity.Map `json:"content"`
-	Link     entity.Map `json:"link"`
-}
-
-type DocsetSearchResult struct {
-	Response DocsetHits `json:"docs"`
-}
-
-// Docset by ID
-type DocsetDetail struct {
-	Response struct {
-		Docs []struct {
-			ID       string   `json:"id"`
-			FileName string   `json:"file_name"`
-			Document string   `json:"document"`
-			Title    string   `json:"title"`
-			Link     string   `json:"link"`
-			Content  []string `json:"content"`
-		} `json:"docs"`
-	} `json:"response"`
-}
-
 func handleGetDocsetByID(w http.ResponseWriter, id string) {
 	result, err := solr.GetDocsetByID(id)
 	if err != nil {
@@ -82,7 +21,7 @@ func handleGetDocsetByID(w http.ResponseWriter, id string) {
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(result))
-	var data DocsetDetail
+	var data entity.DocsetDetail
 	err = dec.Decode(&data)
 	if err != nil {
 		utils.Encode(w, entity.Map{
@@ -115,7 +54,7 @@ func handleSearchDocset(w http.ResponseWriter, q string) {
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(result))
-	var data DocsetSolrResult
+	var data entity.DocsetSolrResult
 	err = dec.Decode(&data)
 	if err != nil {
 		utils.Encode(w, entity.Map{
@@ -127,13 +66,13 @@ func handleSearchDocset(w http.ResponseWriter, q string) {
 	println("hits:", data.Response.NumFound, q)
 
 	w.Header().Set("Content-Type", "application/json")
-	var content []DocsetData
+	var content []entity.DocsetData
 	for _, item := range data.Response.Docs {
 		contents := data.Highlight[item.ID].Content
 		if len(contents) == 0 {
 			continue
 		}
-		content = append(content, DocsetData{
+		content = append(content, entity.DocsetData{
 			ID: entity.Map{
 				"raw": item.ID,
 			},
@@ -155,8 +94,8 @@ func handleSearchDocset(w http.ResponseWriter, q string) {
 		})
 	}
 
-	utils.Encode(w, DocsetSearchResult{
-		Response: DocsetHits{
+	utils.Encode(w, entity.DocsetSearchResult{
+		Response: entity.DocsetHits{
 			Hits:   content,
 			Facets: data.Facet,
 			Total:  data.Response.NumFound,
