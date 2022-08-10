@@ -5,16 +5,17 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/ahmadrosid/heline/solr"
-	"github.com/ahmadrosid/heline/utils"
+	"github.com/ahmadrosid/heline/core/entity"
+	"github.com/ahmadrosid/heline/core/module/solr"
+	"github.com/ahmadrosid/heline/core/utils"
 )
 
 // Docsets: models
 
 type DocsetSolrResult struct {
-	Highlight map[string]Data `json:"highlighting"`
-	Response  DocsetSolrDoc   `json:"response"`
-	Facet     DocsetSolrFacet `json:"facets"`
+	Highlight map[string]entity.Data `json:"highlighting"`
+	Response  DocsetSolrDoc          `json:"response"`
+	Facet     DocsetSolrFacet        `json:"facets"`
 }
 
 type DocsetSolrDoc struct {
@@ -33,7 +34,7 @@ type DocsetSolrField struct {
 type DocsetSolrFacet struct {
 	Count    int `json:"count"`
 	Document struct {
-		Buckets SolrBuckets `json:"buckets"`
+		Buckets entity.SolrBuckets `json:"buckets"`
 	} `json:"document"`
 }
 
@@ -44,12 +45,12 @@ type DocsetHits struct {
 }
 
 type DocsetData struct {
-	ID       Map `json:"id"`
-	Title    Map `json:"title"`
-	FileName Map `json:"file_name"`
-	Document Map `json:"document"`
-	Content  Map `json:"content"`
-	Link     Map `json:"link"`
+	ID       entity.Map `json:"id"`
+	Title    entity.Map `json:"title"`
+	FileName entity.Map `json:"file_name"`
+	Document entity.Map `json:"document"`
+	Content  entity.Map `json:"content"`
+	Link     entity.Map `json:"link"`
 }
 
 type DocsetSearchResult struct {
@@ -74,7 +75,7 @@ func handleGetDocsetByID(w http.ResponseWriter, id string) {
 	result, err := solr.GetDocsetByID(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		utils.Encode(w, Map{
+		utils.Encode(w, entity.Map{
 			"error": err.Error(),
 		})
 		return
@@ -84,7 +85,7 @@ func handleGetDocsetByID(w http.ResponseWriter, id string) {
 	var data DocsetDetail
 	err = dec.Decode(&data)
 	if err != nil {
-		utils.Encode(w, Map{
+		utils.Encode(w, entity.Map{
 			"error": err.Error(),
 		})
 		return
@@ -94,7 +95,7 @@ func handleGetDocsetByID(w http.ResponseWriter, id string) {
 
 	if len(data.Response.Docs) == 0 {
 		w.WriteHeader(http.StatusNotFound)
-		utils.Encode(w, Map{
+		utils.Encode(w, entity.Map{
 			"error": id + " not found!",
 		})
 		return
@@ -107,7 +108,7 @@ func handleSearchDocset(w http.ResponseWriter, q string) {
 	result, err := solr.DocsetSearch(solr.DocsetQuery{Query: q})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		utils.Encode(w, Map{
+		utils.Encode(w, entity.Map{
 			"error": err.Error(),
 		})
 		return
@@ -117,7 +118,7 @@ func handleSearchDocset(w http.ResponseWriter, q string) {
 	var data DocsetSolrResult
 	err = dec.Decode(&data)
 	if err != nil {
-		utils.Encode(w, Map{
+		utils.Encode(w, entity.Map{
 			"error": err.Error(),
 		})
 		return
@@ -133,22 +134,22 @@ func handleSearchDocset(w http.ResponseWriter, q string) {
 			continue
 		}
 		content = append(content, DocsetData{
-			ID: Map{
+			ID: entity.Map{
 				"raw": item.ID,
 			},
-			Title: Map{
+			Title: entity.Map{
 				"raw": item.Title,
 			},
-			FileName: Map{
+			FileName: entity.Map{
 				"raw": item.FileName,
 			},
-			Link: Map{
+			Link: entity.Map{
 				"raw": item.Link,
 			},
-			Content: Map{
+			Content: entity.Map{
 				"snippet": contents,
 			},
-			Document: Map{
+			Document: entity.Map{
 				"raw": item.Document,
 			},
 		})

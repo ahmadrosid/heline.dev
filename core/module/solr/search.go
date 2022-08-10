@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/ahmadrosid/heline/utils"
+	"github.com/ahmadrosid/heline/core/entity"
+	"github.com/ahmadrosid/heline/core/utils"
 )
 
 type SolrQuery struct {
@@ -33,21 +34,21 @@ func Search(query SolrQuery) ([]byte, error) {
 	// q.Set("hl.method", "unified")
 	u.RawQuery = q.Encode()
 
-	data := Map{
+	data := entity.Map{
 		"query":  "content:" + query.Query,
 		"fields": "id,file_id,repo,lang,branch,owner_id",
-		"facet": Map{
-			"lang": Map{
+		"facet": entity.Map{
+			"lang": entity.Map{
 				"type":  "terms",
 				"field": "lang",
 				"limit": 10,
 			},
-			"path": Map{
+			"path": entity.Map{
 				"type":  "terms",
 				"field": "path",
 				"limit": 8,
 			},
-			"repo": Map{
+			"repo": entity.Map{
 				"type":  "terms",
 				"field": "repo",
 				"limit": 7,

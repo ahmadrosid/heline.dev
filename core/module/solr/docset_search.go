@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/ahmadrosid/heline/utils"
+	"github.com/ahmadrosid/heline/core/entity"
+	"github.com/ahmadrosid/heline/core/utils"
 )
 
 type DocsetQuery struct {
@@ -53,11 +54,11 @@ func DocsetSearch(query DocsetQuery) ([]byte, error) {
 	// q.Set("hl.method", "unified")
 	u.RawQuery = q.Encode()
 
-	data := Map{
+	data := entity.Map{
 		"query":  "content:" + query.Query,
 		"fields": "id,file_name,title,link,document",
-		"facet": Map{
-			"document": Map{
+		"facet": entity.Map{
+			"document": entity.Map{
 				"type":  "terms",
 				"field": "document",
 				"limit": 10,

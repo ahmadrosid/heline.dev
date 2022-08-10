@@ -10,8 +10,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/ahmadrosid/heline/solr"
-	"github.com/ahmadrosid/heline/utils"
+	"github.com/ahmadrosid/heline/core/entity"
+	"github.com/ahmadrosid/heline/core/module/solr"
+	"github.com/ahmadrosid/heline/core/utils"
 	queryparam "github.com/tomwright/queryparam/v4"
 )
 
@@ -63,7 +64,7 @@ func Handler(analytic http.Handler) http.Handler {
 	})
 }
 
-func getQueryFilter(param QueryParam) []string {
+func getQueryFilter(param entity.QueryParam) []string {
 	var filter []string
 
 	if len(param.Lang) > 0 {
@@ -83,7 +84,7 @@ func getQueryFilter(param QueryParam) []string {
 
 func handleSearch(w http.ResponseWriter, r *http.Request) {
 	enc := json.NewEncoder(w)
-	param := QueryParam{}
+	param := entity.QueryParam{}
 	err := queryparam.Parse(r.URL.Query(), &param)
 	switch err {
 	case nil:
@@ -119,17 +120,17 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		enc.Encode(Map{
+		enc.Encode(entity.Map{
 			"error": err.Error(),
 		})
 		return
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(result))
-	var data SolrResult
+	var data entity.SolrResult
 	err = dec.Decode(&data)
 	if err != nil {
-		enc.Encode(Map{
+		enc.Encode(entity.Map{
 			"error": err.Error(),
 		})
 		return
@@ -138,36 +139,36 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	println("hints:", data.Response.NumFound, q)
 
 	w.Header().Set("Content-Type", "application/json")
-	var content []ContentData
+	var content []entity.ContentData
 	for _, item := range data.Response.Docs {
 		contents := data.Highlight[item.ID].Content
 		if len(contents) == 0 {
 			continue
 		}
-		content = append(content, ContentData{
-			ID: Map{
+		content = append(content, entity.ContentData{
+			ID: entity.Map{
 				"raw": item.ID,
 			},
-			Branch: Map{
+			Branch: entity.Map{
 				"raw": item.Branch,
 			},
-			OwnerID: Map{
+			OwnerID: entity.Map{
 				"raw": item.OwnerID,
 			},
-			FileID: Map{
+			FileID: entity.Map{
 				"raw": item.FileID,
 			},
-			Content: Map{
+			Content: entity.Map{
 				"snippet": contents,
 				// "snippet": contents[len(contents)-1:],
 			},
-			Repo: Map{
+			Repo: entity.Map{
 				"raw": item.Repo,
 			},
 		})
 	}
-	enc.Encode(CodeSearchResult{
-		Response: CodeHits{
+	enc.Encode(entity.CodeSearchResult{
+		Response: entity.CodeHits{
 			Hits:   content,
 			Facets: data.Facet,
 			Total:  data.Response.NumFound,

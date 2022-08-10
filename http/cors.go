@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+
+	"github.com/ahmadrosid/heline/core/entity"
 )
 
 var allowedMethods = []string{
@@ -35,7 +37,7 @@ func respondError(w http.ResponseWriter, status int, err ...error) {
 	}
 
 	enc := json.NewEncoder(w)
-	enc.Encode(Map{
+	enc.Encode(entity.Map{
 		"status": status,
 		"errors": errors,
 	})

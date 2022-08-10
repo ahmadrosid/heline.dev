@@ -1,4 +1,4 @@
-package http
+package entity
 
 type Map map[string]interface{}
 
