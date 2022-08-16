@@ -111,15 +111,21 @@ export default function CodeSearchResult({ hits, filter, updateFilter, isLoading
                   return;
                 }
 
+                const git_host = item.file_id.raw.split("/")[0];
+                let avatar_url = `https://avatars.githubusercontent.com/u/${item.owner_id.raw}?s=60&amp;v=4`;
+                if (git_host == "gitlab.com") {
+                  avatar_url = "/default-avatar.png";
+                }
+
                 return (
                   <div className="py-2">
                     <div>
-                      <a target="_blank" href={`https://github.com/${item.repo?.raw}`} className="flex gap-2 items-center">
-                        <img className="repo-avatar rounded-full border" src={`https://avatars.githubusercontent.com/u/${item.owner_id.raw}?s=60&amp;v=4`} alt="" width="22" height="22" />
+                      <a target="_blank" href={`https://${git_host}/${item.repo?.raw}`} className="flex gap-2 items-center">
+                        <img className="repo-avatar rounded-full border" src={avatar_url} alt="" width="22" height="22" />
                         <span className="text-gray-700 font-light">{item.repo?.raw}</span>
                       </a>
 
-                      <a target="_blank" href={`https://github.com/${item.repo?.raw}/blob/${item.branch.raw}/${item.file_id.raw.split("/").slice(4, 100).join("/")}`} className="flex gap-1 items-center">
+                      <a target="_blank" href={`https://${git_host}/${item.repo?.raw}/blob/${item.branch.raw}/${item.file_id.raw.split("/").slice(4, 100).join("/")}`} className="flex gap-1 items-center">
                         <span className="text-emerald-500 pl-8 truncate">{item.file_id.raw.split("/").slice(2, 100).join("/")}</span>
                       </a>
                     </div>

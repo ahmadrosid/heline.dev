@@ -25,5 +25,5 @@ array=(
 )
 for i in "${array[@]}"
 do
-	BASE_URL=http://localhost:8984 cargo run -q -- $i;
+	BASE_URL=http://localhost:8984 hli -- $i;
 done
