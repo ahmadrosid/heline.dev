@@ -1,5 +1,4 @@
 [
-	"https://github.com/rust-lang/rust",
 	"https://github.com/alacritty/alacritty",
 	"https://github.com/sharkdp/bat",
 	"https://github.com/BurntSushi/ripgrep",
@@ -998,5 +997,6 @@
 	"https://github.com/tbillington/kondo",
 	"https://github.com/bitshifter/glam-rs",
 	"https://github.com/paupino/rust-decimal",
-	"https://github.com/996icu/996.ICU"
+	"https://github.com/996icu/996.ICU",
+	"https://github.com/rust-lang/rust"
 ]
