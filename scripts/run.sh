@@ -33,10 +33,9 @@ if [ "$1" == "stop" ]; then
 fi
 
 if [ "$1" == "reset" ]; then
-  set e
+  set -ex
   . scripts/solr.sh clean
   . scripts/solr.sh prepare
-  # . scripts/scrape.sh
 fi
 
 if [ "$1" == "build" ]; then

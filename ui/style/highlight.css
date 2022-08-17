@@ -17,6 +17,7 @@ mark {
     white-space: pre-wrap;
     word-break: break-all;
     line-height: 1rem;
+    tab-size: 4;
 }
 
 .hl-num {
