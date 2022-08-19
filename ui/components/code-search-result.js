@@ -125,7 +125,7 @@ export default function CodeSearchResult({ hits, filter, updateFilter, isLoading
                         <span className="text-gray-700 font-light">{item.repo?.raw}</span>
                       </a>
 
-                      <a target="_blank" href={`https://${git_host}/${item.repo?.raw}/blob/${item.branch.raw}/${item.file_id.raw.split("/").slice(4, 100).join("/")}`} className="flex gap-1 items-center">
+                      <a target="_blank" href={`https://${git_host}/${item.repo?.raw}/blob/${item.branch.raw}/${item.file_id.raw.split("/").slice(item.repo?.raw.split("/").length + 1, 100).join("/")}`} className="flex gap-1 items-center">
                         <span className="text-emerald-500 pl-8 truncate">{item.file_id.raw.split("/").slice(2, 100).join("/")}</span>
                       </a>
                     </div>

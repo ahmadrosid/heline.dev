@@ -84,6 +84,19 @@ export default function Home() {
         }
     }, [q])
 
+    useEffect(() => {
+        const keyDownHandler = (e) => {
+            if (e.code == "Enter") {
+                fetchCodeSearch(val, filter)
+            }
+        };
+
+        document.addEventListener("keydown", keyDownHandler);
+        return () => {
+            document.removeEventListener("keydown", keyDownHandler);
+        };
+    }, []);
+
     return (
         <div className="bg-zinc-50 min-h-screen h-full">
             <Head>
