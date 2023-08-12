@@ -28,8 +28,9 @@ jobs:
         run: |
           set -e
           cd ui
-          npm install
-          npm run build
+          pnpm install -g pnpm
+          pnpm install
+          pnpm run build
 
       - name: Build & Scrape
         run: go build ./...
