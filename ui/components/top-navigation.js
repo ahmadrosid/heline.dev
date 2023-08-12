@@ -1,14 +1,14 @@
-import { BiSearchAlt } from "react-icons/bi"
+import { BiSearchAlt } from "react-icons/bi";
 
 export default function TopNavigation({ setVal, q }) {
   return (
-    <div className='flex items-center gap-4 w-full'>
+    <div className="flex items-center gap-4 w-full">
       <div className="w-full max-w-[25%]">
-        <div className="text-emerald-500 flex items-center gap-x-2 px-4">
+        <div className="text-blue-500 flex items-center gap-x-2 px-4">
           <a href="/">
             <h1 className="text-2xl font-extrabold text-gray-900 sm:text-center inline-flex items-center select-none">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-600">
-                heline
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-sky-600">
+                diggerdex
               </span>
               <span>.</span>
               <span className="text-gray-700">dev</span>
@@ -16,12 +16,14 @@ export default function TopNavigation({ setVal, q }) {
           </a>
         </div>
       </div>
-      <div className="flex px-4 rounded shadow-sm border bg-white items-center justify-between w-full mr-8 mx-4">
-        <span className="text-gray-500 select-none text-xl pr-4"><BiSearchAlt /></span>
+      <div className="flex px-4 rounded-xl shadow-sm border bg-white items-center justify-between w-full mr-8 mx-4">
+        <span className="text-gray-500 select-none text-xl pr-4">
+          <BiSearchAlt />
+        </span>
 
         <input
           onChange={(el) => {
-            setVal(encodeURIComponent(el.target.value))
+            setVal(encodeURIComponent(el.target.value));
           }}
           autoFocus={true}
           spellCheck={false}
@@ -32,5 +34,5 @@ export default function TopNavigation({ setVal, q }) {
         />
       </div>
     </div>
-  )
+  );
 }

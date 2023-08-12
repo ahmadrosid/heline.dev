@@ -41,7 +41,7 @@ fi
 if !(command -v node); then
   curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
   sudo apt install nodejs -y
-  npm install --global yarn
+  npm install --global pnpm
 fi
 
 # Install rust

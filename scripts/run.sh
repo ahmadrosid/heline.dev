@@ -13,9 +13,9 @@ function start_ui() {
   # Start UI server
   UI_FOLDER="$(pwd)/ui"
   if test -d "$UI_FOLDER/node_modules"; then
-    cd $UI_FOLDER && yarn dev
+    cd $UI_FOLDER && pnpm dev
   else
-    cd $UI_FOLDER && yarn && yarn dev
+    cd $UI_FOLDER && pnpm && pnpm dev
   fi
 }
 
@@ -39,7 +39,7 @@ if [ "$1" == "reset" ]; then
 fi
 
 if [ "$1" == "build" ]; then
-  cd ui && yarn build
+  cd ui && pnpm build
   cd ../ && go build
 fi
 
@@ -49,7 +49,7 @@ if [ "$1" == "production" ]; then
 fi
 
 if [ "$1" == "gen" ]; then
-  cd ui && yarn build
+  cd ui && pnpm build
   cd ..
   git add .
   git commit -m 'chore: regenerate static file'
