@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="/ui/public/favicon.png" />
+    <img src="/ui/public/diggerdex-logo.png" />
 </p>
 
 <h1 align="center"> DiggerDex </h1>

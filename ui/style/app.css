@@ -1,7 +1,7 @@
 .shim-red {
   position: relative;
   overflow: hidden;
-  @apply bg-emerald-500
+  @apply bg-blue-500
 }
 
 .shim-red::after {
