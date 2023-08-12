@@ -28,7 +28,7 @@ jobs:
         run: |
           set -e
           cd ui
-          pnpm install -g pnpm
+          npm install -g pnpm
           pnpm install
           pnpm run build
 
