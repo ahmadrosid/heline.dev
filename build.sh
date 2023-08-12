@@ -1,10 +1,10 @@
 #!/bin/bash
 cd ui
 if [ ! -d "node_modules" ]; then
-    yarn install
+    pnpm install
 fi
 
-yarn build
+pnpm build
 cd ..
 go build
 ./heline server start
