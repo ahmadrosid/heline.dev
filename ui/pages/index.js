@@ -20,11 +20,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Diggerdex - Code search for modern developer 🚀.</title>
         <link rel="icon" type="image/png" href="/favicon.png" />
-        <script
+        {/* <script
           defer
           data-domain="diggerdex.dev"
           src="https://plausible.io/js/plausible.js"
-        ></script>
+        ></script> */}
       </Head>
 
       <div className="bg-gray-50 min-h-screen">

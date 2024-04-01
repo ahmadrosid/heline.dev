@@ -107,11 +107,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>{`${q} - heline`}</title>
         <link rel="icon" type="image/png" href="/favicon.png" />
-        <script
+        {/* <script
           defer
           data-domain="heline.dev"
           src="https://plausible.io/js/plausible.js"
-        ></script>
+        ></script> */}
       </Head>
 
       <nav className="bg-white shadow-sm">
