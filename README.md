@@ -2,7 +2,7 @@
     <img src="/ui/public/diggerdex-logo.png" />
 </p>
 
-<h1 align="center"> DiggerDex </h1>
+<h1 align="center"> Heline.dev </h1>
 <p align="center">
     Code search for modern Developers.
 </p>
