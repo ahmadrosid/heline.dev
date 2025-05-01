@@ -1,5 +1,4 @@
 import { BiCode, BiNote, BiNews } from "react-icons/bi";
-import { BsStackOverflow } from "react-icons/bs";
 
 export default function SubNavigation({ updateMatchingSearch, tbm = "" }) {
   const active = (val) => {
@@ -27,13 +26,6 @@ export default function SubNavigation({ updateMatchingSearch, tbm = "" }) {
         >
           <BiNote className="text-xl" />
           <span className="text-xs">Documentation</span>
-        </button>
-        <button
-          onClick={() => updateMatchingSearch("stf")}
-          className={active("stf")}
-        >
-          <BsStackOverflow className="text-xl" />
-          <span className="text-xs">Stack Overflow</span>
         </button>
         <button
           onClick={() => updateMatchingSearch("blog")}

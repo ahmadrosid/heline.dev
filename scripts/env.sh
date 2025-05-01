@@ -3,7 +3,7 @@
 BUILD_FOLDER="$(pwd)/_build"
 
 SOLR_BUILD_FOLDER="$BUILD_FOLDER/solr"
-SOLR_VERSION="8.11.1"
+SOLR_VERSION="8.11.4"
 # SOLR_VERSION="7.7.3"
 SOLR_DOWNLOAD_URL="https://dlcdn.apache.org/lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz"
 # SOLR_DOWNLOAD_URL="https://dlcdn.apache.org/lucene/solr/8.11.1/solr-8.11.1-src.tgz"
