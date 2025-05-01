@@ -18,11 +18,11 @@ export default function Home() {
     <>
       <Head>
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>Diggerdex - Code search for modern developer 🚀.</title>
+        <title>Heline.dev - Code search for modern developer 🚀.</title>
         <link rel="icon" type="image/png" href="/favicon.png" />
         {/* <script
           defer
-          data-domain="diggerdex.dev"
+          data-domain="heline.dev"
           src="https://plausible.io/js/plausible.js"
         ></script> */}
       </Head>
@@ -33,7 +33,7 @@ export default function Home() {
           <div className="text-center space-y-4 w-full max-w-xl p-8">
             <h1 className="text-6xl font-extrabold text-gray-900 sm:text-center inline-flex items-center select-none leading-tight">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-blue-600">
-                diggerdex
+                heline
               </span>
               <span>.</span>
               <span className="text-gray-700">dev</span>
