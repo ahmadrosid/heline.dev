@@ -37,11 +37,6 @@ func Handler(analytic http.Handler) http.Handler {
 			query = query + "?q=" + r.URL.Query().Get("q")
 		}
 
-		if r.URL.Query().Get("tbm") != "" {
-			query = query + "&tbm=" + r.URL.Query().Get("tbm")
-			println(query)
-		}
-
 		if r.URL.Query().Get("filter[repo]") != "" {
 			query = query + "&filter[repo]=" + r.URL.Query().Get("filter[repo]")
 		}

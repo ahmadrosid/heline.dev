@@ -62,8 +62,8 @@ func Search(query SolrQuery) ([]byte, error) {
 
 	queryData, _ := json.Marshal(data)
 
-	println("solr_query:", utils.ByteToString(queryData))
-	println("raw_query:", u.RawQuery)
+	println("search.go - solr_query:", utils.ByteToString(queryData))
+	println("search.go - raw_query:", u.RawQuery)
 
 	payload := bytes.NewReader(queryData)
 

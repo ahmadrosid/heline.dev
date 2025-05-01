@@ -58,9 +58,9 @@ export default function CodeSearchResult({
 
       {hits && (
         <div className="w-full max-w-7xl mx-auto flex">
-          <div className="w-full min-w-[250px] max-w-[25%] py-4 space-y-4 pl-4">
+          <div className="w-full min-w-[250px] max-w-[25%] py-4 space-y-4 pl-4 h-[95vh] overflow-y-auto">
             <div className="space-y-2">
-              <h3 className="text-gray-800 uppercase">Repository</h3>
+              <h3 className="text-gray-800 font-semibold text-sm tracking-tight uppercase">Repository</h3>
               <div className="py-2 space-y-1">
                 {renderArray(
                   hits.facets?.repo?.buckets.map((item, index) => (
@@ -84,7 +84,7 @@ export default function CodeSearchResult({
               </div>
             </div>
             <div className="space-y-2 pt-2">
-              <h3 className="text-gray-800 uppercase">Path</h3>
+              <h3 className="text-gray-800 font-semibold text-sm tracking-tight uppercase">Path</h3>
               <div className="py-2 space-y-1">
                 {renderArray(
                   hits.facets?.path?.buckets.map((item, index) => (
@@ -105,7 +105,7 @@ export default function CodeSearchResult({
               </div>
             </div>
             <div className="space-y-2 pt-2">
-              <h3 className="text-gray-800 uppercase">Language</h3>
+              <h3 className="text-gray-800 font-semibold text-sm tracking-tight uppercase">Language</h3>
               <div className="py-2 space-y-1">
                 {renderArray(
                   hits.facets?.lang?.buckets.map((item, index) => (
@@ -126,9 +126,9 @@ export default function CodeSearchResult({
               </div>
             </div>
           </div>
-          <div className="w-full max-w-[75%] py-4 px-8 pr-6">
+          <div className="w-full max-w-[75%] py-4 px-8 pr-6 h-[95vh] overflow-y-auto scrollbar-hide">
             <div className="pb-2">
-              <p className="text-gray-700">Total: {hits.total}</p>
+              <p className="text-gray-800 tracking-tighter font-semibold">Total: {hits.total}</p>
             </div>
             {renderArray(
               hits.hits?.map((item) => {
