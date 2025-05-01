@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the built executable
-COPY --from=builder /app/target/release/hli /app/heline-indexer
+COPY --from=builder /app/target/release/heline-indexer /app/heline-indexer
 COPY --from=builder /app/repo.json /app/
 
 # Create directories for repositories
