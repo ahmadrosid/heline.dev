@@ -1,10 +1,10 @@
-<p align="center">
-    <img src="/ui/public/logo.png" />
-</p>
-
 <h1 align="center"> Heline.dev </h1>
 <p align="center">
     Code search for modern Developers.
+</p>
+
+<p align="center">
+    <img src="demo.png" />
 </p>
 
 ## Requirements
