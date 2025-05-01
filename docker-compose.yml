@@ -34,6 +34,7 @@ services:
     environment:
       - SOLR_BASE_URL=http://solr:8983
       - SOLR_PORT=8983
+      - INDEXER_URL=http://heline-indexer:8080
     depends_on:
       solr:
         condition: service_healthy

@@ -42,8 +42,17 @@ func NewIndexerClient() *IndexerClient {
 	// Get the indexer URL from environment or use default
 	indexerURL := os.Getenv("INDEXER_URL")
 	if indexerURL == "" {
-		indexerURL = "http://heline-indexer:8080"
+		// Try localhost if running locally
+		if _, err := os.Stat("/app"); os.IsNotExist(err) {
+			// Not in Docker, likely local development
+			indexerURL = "http://localhost:8080"
+		} else {
+			// In Docker environment
+			indexerURL = "http://heline-indexer:8080"
+		}
 	}
+
+	fmt.Printf("Connecting to indexer at: %s\n", indexerURL)
 
 	return &IndexerClient{
 		BaseURL: indexerURL,
