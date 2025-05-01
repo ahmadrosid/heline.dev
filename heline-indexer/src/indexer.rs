@@ -210,9 +210,12 @@ impl Indexer {
     }
 
     async fn store(&self, mut data: GitFile, html: &str, base_url: &str) {
-        // Process the document before any async operations
-        let document = Document::from(html);
-        let chunks = self.process_document(&document);
+        // Process the document outside of async context to avoid Send issues
+        // This way, Document (which is not Send) doesn't cross an await point
+        let chunks = {
+            let document = Document::from(html);
+            self.process_document(&document)
+        };
         
         let mut update = false;
         for chunk in chunks {
