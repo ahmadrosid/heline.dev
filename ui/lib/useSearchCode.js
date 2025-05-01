@@ -53,7 +53,7 @@ const useSearchCode = ({ setHits, setNotFound, setIsLoading }) => {
 
     setIsLoading(true)
     // axios.get(`https://heline.dev/api/search?q=${queryParam}`)
-      axios.get(`/api/search?q=${queryParam}`)
+      axios.get(`http://localhost:8000/api/search?q=${queryParam}`)
       .then(res => {
         setIsLoading(false)
         if (res.data.hits.hits === null) {

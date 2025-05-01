@@ -11,7 +11,7 @@
 
 - rust
 - golang
-- nodejs >= 16
+- nodejs >= 18
 - java >= 8
 
 ## Development
