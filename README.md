@@ -1,6 +1,6 @@
 <h1 align="center"> Heline.dev </h1>
 <p align="center">
-    Code search for modern Developers.
+    Code search for modern developers.
 </p>
 
 <p align="center">
