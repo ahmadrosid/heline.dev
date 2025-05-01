@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  # Apache Solr service
+  solr:
+    image: solr:8.11.4
+    container_name: heline-solr
+    ports:
+      - "8984:8983"
+    volumes:
+      - solr_data:/var/solr
+    command: >
+      bash -c "
+        solr-precreate heline &&
+        solr-precreate docset &&
+        exec solr -f
+      "
+    networks:
+      - heline-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8983/solr/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Heline Go application
+  heline-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: heline-app
+    ports:
+      - "8000:8000"
+    environment:
+      - SOLR_BASE_URL=http://solr:8983
+      - SOLR_PORT=8983
+    depends_on:
+      solr:
+        condition: service_healthy
+    networks:
+      - heline-network
+    volumes:
+      - app_data:/app/_build
+    command: >
+      bash -c "
+        sleep 10 &&
+        ./heline server start
+      "
+
+  # Heline Indexer (Rust application)
+  heline-indexer:
+    build:
+      context: ./heline-indexer
+      dockerfile: Dockerfile
+    container_name: heline-indexer
+    environment:
+      - SOLR_BASE_URL=http://solr:8983
+    volumes:
+      - indexer_repos:/app/repos
+    depends_on:
+      - solr
+      - heline-app
+    networks:
+      - heline-network
+    # By default, this container will exit after indexing
+    # You can override this with a custom command if needed
+
+networks:
+  heline-network:
+    driver: bridge
+
+volumes:
+  solr_data:
+    driver: local
+  app_data:
+    driver: local
+  indexer_repos:
+    driver: local
