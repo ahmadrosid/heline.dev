@@ -1,5 +1,8 @@
 .PHONY: ui 
 
+build:
+    go build -o $(TARGET_DIR)
+
 dev:
 	bash build.sh
 
