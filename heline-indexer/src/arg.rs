@@ -22,9 +22,13 @@ impl Arg {
 
     // Parse to: hli index_file.json --folder some/path
     pub fn parse(mut self) -> Result<Self, String> {
-        self.solr_url = match env::var("BASE_URL") {
+        // First try to get SOLR_BASE_URL, then BASE_URL, then use default
+        self.solr_url = match env::var("SOLR_BASE_URL") {
             Ok(val) => val,
-            Err(_) => "http://localhost:8984".to_string(),
+            Err(_) => match env::var("BASE_URL") {
+                Ok(val) => val,
+                Err(_) => "http://localhost:8984".to_string(),
+            },
         };
 
         let arg_input: Vec<String> = env::args().collect();
