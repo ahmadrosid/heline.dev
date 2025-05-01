@@ -16,12 +16,6 @@ import (
 	queryparam "github.com/tomwright/queryparam/v4"
 )
 
-//go:embed dist
-//go:embed dist/_next
-//go:embed dist/_next/static/chunks/pages/*.js
-//go:embed dist/_next/static/*/*.js
-var nextFS embed.FS
-
 func Handler(analytic http.Handler) http.Handler {
 	index, err := fs.Sub(nextFS, "dist")
 	if err != nil {
@@ -30,7 +24,12 @@ func Handler(analytic http.Handler) http.Handler {
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("/", http.FileServer(http.FS(index)))
+	mux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{
+			"message": "Welcome to Heline API",
+		})
+	}))
 	mux.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
 		var query = "/search.html"
 		if r.URL.Query().Get("q") != "" {
