@@ -2,11 +2,8 @@ package http
 
 import (
 	"bytes"
-	"embed"
 	"encoding/json"
 	"fmt"
-	"io/fs"
-	"log"
 	"net/http"
 	"strings"
 
@@ -17,11 +14,6 @@ import (
 )
 
 func Handler(analytic http.Handler) http.Handler {
-	index, err := fs.Sub(nextFS, "dist")
-	if err != nil {
-		log.Fatal(err)
-		return nil
-	}
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
