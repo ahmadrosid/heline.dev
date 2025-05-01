@@ -1,6 +1,6 @@
 .PHONY: ui 
 
-install:
+dev:
 	bash build.sh
 
 ui:

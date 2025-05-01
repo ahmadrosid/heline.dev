@@ -8,7 +8,7 @@ export default function TopNavigation({ setVal, q }) {
           <a href="/">
             <h1 className="text-2xl font-extrabold text-gray-900 sm:text-center inline-flex items-center select-none">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-sky-600">
-                diggerdex
+                heline
               </span>
               <span>.</span>
               <span className="text-gray-700">dev</span>

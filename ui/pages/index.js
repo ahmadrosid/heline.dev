@@ -31,15 +31,15 @@ export default function Home() {
         <div class="absolute inset-0 bg-[url(/grid.svg)] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
         <div className="max-w-7xl min-h-[calc(100vh-4.75rem)] mx-auto py-14 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 sm:flex sm:flex-col sm:items-center relative">
           <div className="text-center space-y-4 w-full max-w-xl p-8">
-            <h1 className="text-6xl font-extrabold text-gray-900 sm:text-center inline-flex items-center select-none leading-tight">
+            <h1 className="text-5xl font-extrabold text-gray-900 sm:text-center inline-flex items-center select-none leading-tight">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-blue-600">
                 heline
               </span>
               <span>.</span>
               <span className="text-gray-700">dev</span>
             </h1>
-            <p className="text-lg font-normal text-gray-400 tracking-wider">
-              Search Engine for Modern Developers.
+            <p className="text-lg font-normal text-gray-400 tracking-tight">
+              Find exactly the code you need in seconds.
             </p>
             <div className="self-center py-2 mt-8 bg-white shadow-md w-full max-w-xl rounded-xl overflow-hidden content border">
               <div className="px-4 flex items-center">

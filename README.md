@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="/ui/public/diggerdex-logo.png" />
+    <img src="/ui/public/logo.png" />
 </p>
 
 <h1 align="center"> Heline.dev </h1>
