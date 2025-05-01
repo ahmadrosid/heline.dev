@@ -6,10 +6,10 @@ COPY go.* .
 RUN go mod download
 
 COPY . .
-# Replace the make build command with direct go build
 RUN go build -o /go/bin/heline
 
 FROM alpine:3.17.2
+RUN apk add --no-cache bash
 COPY --from=base /go/bin/heline /heline
 ENV PORT=8000
 
