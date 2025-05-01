@@ -6,13 +6,13 @@ COPY go.* .
 RUN go mod download
 
 COPY . .
-RUN make build TARGET_DIR=/go/bin/app
+RUN make build TARGET_DIR=/go/bin/heline
 
 FROM alpine:3.17.2
-COPY --from=base /go/bin/app /app
+COPY --from=base /go/bin/heline /heline
 ENV PORT=8000
 
 EXPOSE 8000
 
 # Command to run the executable
-CMD ["./app", "server", "start"]
+CMD ["./heline", "server", "start"]
