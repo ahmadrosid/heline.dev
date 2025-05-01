@@ -20,3 +20,6 @@ prod:
 
 stop:
 	bash scripts/run.sh stop
+
+index:
+	bash scripts/indexing.sh

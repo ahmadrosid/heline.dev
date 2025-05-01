@@ -52,8 +52,8 @@ const useSearchCode = ({ setHits, setNotFound, setIsLoading }) => {
     }
 
     setIsLoading(true)
-    // axios.get(`https://heline.dev/api/search?q=${queryParam}`)
-      axios.get(`http://localhost:8000/api/search?q=${queryParam}`)
+    // Use environment variable for API URL
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/search?q=${queryParam}`)
       .then(res => {
         setIsLoading(false)
         if (res.data.hits.hits === null) {

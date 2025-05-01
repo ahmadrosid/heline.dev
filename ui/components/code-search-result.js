@@ -6,7 +6,6 @@ export default function CodeSearchResult({
   updateFilter,
   isLoading = false,
 }) {
-  console.log('hits', hits?.hits);
   const updateFilterRepo = (index) => {
     if (hits.facets.repo.buckets.length == 0) {
       return;
@@ -174,7 +173,7 @@ export default function CodeSearchResult({
                         className="flex gap-1 items-center"
                       >
                         <span className="text-blue-500 pl-8 truncate">
-                          {item.file_id.raw.split("/").slice(2, 100).join("/")}
+                          {item.file_id.raw.split("/").slice(3, 100).join("/")}
                         </span>
                       </a>
                     </div>
