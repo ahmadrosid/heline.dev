@@ -1,36 +1,18 @@
-FROM node:18 AS ui-builder
+FROM golang:1.21.1-alpine as base
+RUN apk add bash make
 
-WORKDIR /app
-COPY ui /app/ui
-WORKDIR /app/ui
+WORKDIR /go/src/app
+COPY go.* .
+RUN go mod download
 
-RUN npm install -g pnpm
-RUN pnpm install
-RUN pnpm build
+COPY . .
+RUN make build TARGET_DIR=/go/bin/app
 
-FROM golang:1.21.1-alpine AS go-builder
+FROM alpine:3.17.2
+COPY --from=base /go/bin/app /app
+ENV PORT=8000
 
-WORKDIR /app
-COPY . /app
-COPY --from=ui-builder /app/ui/dist /app/ui/dist
-
-# Build the Go application
-RUN go build -o heline
-
-# Final stage
-FROM golang:1.21.1-alpine
-
-WORKDIR /app
-
-# Copy the built executable
-COPY --from=go-builder /app/heline /app/
-COPY --from=go-builder /app/http /app/http
-
-# Create necessary directories
-RUN mkdir -p /app/_build
-
-# Expose the port the app runs on
 EXPOSE 8000
 
 # Command to run the executable
-CMD ["./heline", "server", "start"]
+CMD ["./app", "server", "start"]
