@@ -8,7 +8,7 @@ RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm build
 
-FROM golang:1.21 AS go-builder
+FROM golang:1.24 AS go-builder
 
 WORKDIR /app
 COPY . /app
@@ -18,7 +18,7 @@ COPY --from=ui-builder /app/ui/dist /app/ui/dist
 RUN go build -o heline
 
 # Final stage
-FROM golang:1.21-slim
+FROM golang:1.24-slim
 
 WORKDIR /app
 
