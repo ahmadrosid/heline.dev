@@ -43,6 +43,12 @@ func Handler(analytic http.Handler) http.Handler {
 		http.Redirect(w, r, query, http.StatusSeeOther)
 	})
 	mux.HandleFunc("/api/search", handleSearch)
+	
+	// Add indexer API endpoints
+	mux.HandleFunc("/api/index", handleIndexRepository)
+	mux.HandleFunc("/api/index/status/", handleJobStatus)
+	mux.HandleFunc("/api/index/jobs", handleListJobs)
+	
 	mux.Handle("/stats", analytic)
 
 	return wrapCORSHandler(mux, &CorsConfig{
@@ -66,6 +72,125 @@ func getQueryFilter(param entity.QueryParam) []string {
 	}
 
 	return filter
+}
+
+// handleIndexRepository processes requests to index a git repository
+func handleIndexRepository(w http.ResponseWriter, r *http.Request) {
+	// Only allow POST requests
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Method not allowed",
+		})
+		return
+	}
+
+	// Parse the request body
+	var req struct {
+		GitURL string `json:"git_url"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Invalid request body: " + err.Error(),
+		})
+		return
+	}
+
+	// Validate the git URL
+	if req.GitURL == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Git URL is required",
+		})
+		return
+	}
+
+	// Create a new indexer client
+	client := NewIndexerClient()
+
+	// Send the indexing request to the indexer API
+	resp, err := client.IndexRepository(req.GitURL)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Failed to index repository: " + err.Error(),
+		})
+		return
+	}
+
+	// Return the response
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(resp)
+}
+
+// handleJobStatus retrieves the status of an indexing job
+func handleJobStatus(w http.ResponseWriter, r *http.Request) {
+	// Only allow GET requests
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Method not allowed",
+		})
+		return
+	}
+
+	// Extract the job ID from the URL path
+	jobID := strings.TrimPrefix(r.URL.Path, "/api/index/status/")
+	if jobID == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Job ID is required",
+		})
+		return
+	}
+
+	// Create a new indexer client
+	client := NewIndexerClient()
+
+	// Get the job status from the indexer API
+	status, err := client.GetJobStatus(jobID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Failed to get job status: " + err.Error(),
+		})
+		return
+	}
+
+	// Return the response
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(status)
+}
+
+// handleListJobs retrieves a list of all indexing jobs
+func handleListJobs(w http.ResponseWriter, r *http.Request) {
+	// Only allow GET requests
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Method not allowed",
+		})
+		return
+	}
+
+	// Create a new indexer client
+	client := NewIndexerClient()
+
+	// Get the list of jobs from the indexer API
+	jobs, err := client.ListJobs()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Failed to list jobs: " + err.Error(),
+		})
+		return
+	}
+
+	// Return the response
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(jobs)
 }
 
 func handleSearch(w http.ResponseWriter, r *http.Request) {

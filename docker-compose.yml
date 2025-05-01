@@ -47,23 +47,28 @@ services:
         ./heline server start
       "
 
-  # Heline Indexer (Rust application)
+  # Heline Indexer API Service (Rust application)
   heline-indexer:
     build:
       context: ./heline-indexer
       dockerfile: Dockerfile
     container_name: heline-indexer
+    ports:
+      - "8080:8080"
     environment:
       - SOLR_BASE_URL=http://solr:8983
+      - API_PORT=8080
     volumes:
       - indexer_repos:/app/repos
     depends_on:
-      - solr
-      - heline-app
+      solr:
+        condition: service_healthy
     networks:
       - heline-network
-    # By default, this container will exit after indexing
-    # You can override this with a custom command if needed
+    command: >
+      bash -c "
+        ./heline-indexer api
+      "
 
 networks:
   heline-network:
