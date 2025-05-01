@@ -19,6 +19,7 @@ pub struct MetaIndexFile {
     git_host: String,
 }
 
+#[derive(Clone)]
 pub struct Indexer {
     pub repo_dir: PathBuf,
     pub git_url: String,
@@ -87,7 +88,6 @@ impl Indexer {
             .collect::<Vec<_>>()
             .len();
 
-        // Files that should be excluded from indexing
         let excluded_files = [
             "composer.lock",
             "package-lock.json",
@@ -97,7 +97,6 @@ impl Indexer {
             ".DS_Store",
         ];
         
-        // File extensions that should be excluded from indexing
         let excluded_extensions = [
             ".lock",
             ".min.js",
@@ -128,17 +127,14 @@ impl Indexer {
                 continue;
             }
             
-            // Get the file name and check if it should be excluded
             let file_name = entry.path().file_name().unwrap_or_default().to_string_lossy();
             
-            // Skip excluded files and file extensions
             if excluded_files.contains(&file_name.as_ref()) || 
                excluded_extensions.iter().any(|&ext| file_name.ends_with(ext)) {
                 println!("Skipping excluded file: {}", entry.path().display());
                 continue;
             }
             
-            // Skip files larger than 5MB
             if let Ok(metadata) = entry.metadata() {
                 if metadata.len() > 5 * 1024 * 1024 {
                     println!("Skipping large file: {} ({} bytes)", entry.path().display(), metadata.len());
@@ -198,7 +194,6 @@ impl Indexer {
                             .to_vec()
                             .join("/")
                     } else {
-                        // Handle the case where path is too short
                         file_path.clone()
                     },
                     repo: meta.git_repo.to_string(),
@@ -215,50 +210,57 @@ impl Indexer {
     }
 
     async fn store(&self, mut data: GitFile, html: &str, base_url: &str) {
+        // Process the document before any async operations
         let document = Document::from(html);
-        let table = document.find(Class("highlight-table"));
-        if let Some(el) = table.last() {
-            let mut update = false;
-            let mut index = 0;
-            let mut max_index = 3;
-            let max_chars = 2000;
-            let mut child: String = String::new();
-            for td in el.find(Name("tr")) {
-                index += 1;
-                child.push_str(&td.html());
-                child.push('\n');
-                if index == max_index && child.len() < max_chars {
-                    max_index += 1;
-                }
-                if index >= max_index {
-                    index = 0;
-                    max_index = 3;
-                    data.content = vec![];
-                    data.content.push(child.to_string());
-                    child = String::new();
-                    self.create_or_update(&mut update, &data, base_url).await;
-                }
-            }
-
-            // If there any left content that less than `max_index` line then store it to DB!
-            if index != 0 {
-                data.content = vec![];
-                data.content.push(child.to_string());
-                self.create_or_update(&mut update, &data, base_url).await;
-            }
+        let chunks = self.process_document(&document);
+        
+        let mut update = false;
+        for chunk in chunks {
+            data.content = vec![chunk];
+            self.create_or_update(&mut update, &data, base_url).await;
         }
     }
 
+    fn process_document(&self, document: &Document) -> Vec<String> {
+        let mut chunks = Vec::new();
+        if let Some(el) = document.find(Class("highlight-table")).last() {
+            let mut current_chunk = String::new();
+            let mut line_count = 0;
+            const CHUNK_SIZE: usize = 3;
+            const MAX_CHARS: usize = 2000;
+
+            for tr in el.find(Name("tr")) {
+                line_count += 1;
+                let html = tr.html();
+                current_chunk.push_str(&html);
+                current_chunk.push('\n');
+
+                if line_count >= CHUNK_SIZE || current_chunk.len() >= MAX_CHARS {
+                    if !current_chunk.is_empty() {
+                        chunks.push(current_chunk);
+                        current_chunk = String::new();
+                        line_count = 0;
+                    }
+                }
+            }
+
+            if !current_chunk.is_empty() {
+                chunks.push(current_chunk);
+            }
+        }
+        chunks
+    }
+
     async fn create_or_update(&self, update: &mut bool, data: &GitFile, base_url: &str) {
-        if *update == false {
+        if !*update {
             match solr::client::insert(&data, base_url).await {
-                Ok(_) => {}
+                Ok(_) => {},
                 Err(e) => print!("{}\n", e.to_string()),
             }
             *update = true;
         } else {
             match solr::client::update(&data, base_url).await {
-                Ok(_) => {}
+                Ok(_) => {},
                 Err(e) => print!("{}\n", e.to_string()),
             }
         }

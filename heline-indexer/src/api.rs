@@ -98,46 +98,49 @@ async fn handle_index(
     // Clone the jobs for the async task
     let jobs_clone = jobs.clone();
     let job_id_clone = job_id.clone();
+    let git_url_clone = git_url.clone(); // Clone for the message
     
     // Spawn a background task to handle the indexing
-    tokio::spawn(async move {
+    {
         let base_url = std::env::var("SOLR_BASE_URL").unwrap_or_else(|_| "http://localhost:8984".to_string());
         let repo_dir = PathBuf::from("repos");
         
-        // Update job status to running
-        {
-            let mut jobs_map = jobs_clone.lock().await;
-            if let Some(job) = jobs_map.get_mut(&job_id_clone) {
-                job.status = "running".to_string();
-            }
-        }
-        
-        // Create and run the indexer
+        // Create the indexer instance before spawning
         let indexer = Indexer::new(
             repo_dir,
             &git_url,
             &base_url,
             false, // Don't delete folder after indexing
         );
-        
-        // Process the repository
-        let result = indexer.process().await;
-        
-        // Update job status based on result
-        {
-            let mut jobs_map = jobs_clone.lock().await;
-            if let Some(job) = jobs_map.get_mut(&job_id_clone) {
-                job.status = "completed".to_string();
-                job.completed_at = Some(chrono::Utc::now());
-                job.message = Some("Indexing completed successfully".to_string());
+
+        tokio::spawn(async move {
+            // Update job status to running
+            {
+                let mut jobs_map = jobs_clone.lock().await;
+                if let Some(job) = jobs_map.get_mut(&job_id_clone) {
+                    job.status = "running".to_string();
+                }
             }
-        }
-    });
+            
+            // Process the repository
+            indexer.process().await;
+            
+            // Update job status based on result
+            {
+                let mut jobs_map = jobs_clone.lock().await;
+                if let Some(job) = jobs_map.get_mut(&job_id_clone) {
+                    job.status = "completed".to_string();
+                    job.completed_at = Some(chrono::Utc::now());
+                    job.message = Some("Indexing completed successfully".to_string());
+                }
+            }
+        });
+    }
     
     // Return the job ID to the client
     Ok(warp::reply::json(&IndexResponse {
         status: "accepted".to_string(),
-        message: format!("Indexing job for {} has been queued", git_url),
+        message: format!("Indexing job for {} has been queued", git_url_clone),
         job_id: Some(job_id),
     }))
 }
