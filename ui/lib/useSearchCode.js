@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
-const useSearchCode = ({ setHits, setNotFound, setIsLoading }) => {
+const useSearchCode = ({ setHits, setNotFound, setIsLoading, setFilter }) => {
   const router = useRouter()
   const fetchData = (val, filter) => {
 

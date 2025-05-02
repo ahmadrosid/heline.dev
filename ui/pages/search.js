@@ -19,7 +19,7 @@ export default function Home() {
     path: [],
   });
 
-  const fetchCodeSearch = useSearchCode({ setHits, setNotFound, setIsLoading });
+  const fetchCodeSearch = useSearchCode({ setHits, setNotFound, setIsLoading, setFilter });
 
   const [, cancel] = useDebounce(
     () => {
@@ -29,7 +29,7 @@ export default function Home() {
       fetchCodeSearch(val, filter);
     },
     500,
-    [val]
+    [val, filter]
   );
 
   const updateFilter = (filterName, index) => {
@@ -52,7 +52,7 @@ export default function Home() {
   useEffect(() => {
     if (q !== "" && !hits) {
       setVal(q);
-      fetchCodeSearch(val, null);
+      fetchCodeSearch(q, filter);
     }
   }, [q]);
 
