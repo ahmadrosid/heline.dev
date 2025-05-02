@@ -15,7 +15,7 @@ pub fn get_branch_name(dir: &Path) -> String {
             .to_string()
             .trim_end_matches('\n')
             .to_string(),
-        Err(_) => "master".to_string(),
+        Err(_) => "main".to_string(),
     };
 }
 
