@@ -4,7 +4,7 @@
 </p>
 
 <p align="center">
-    <img src="demo.png" />
+    <img src="https://raw.githubusercontent.com/ahmadrosid/heline.dev/refs/heads/main/demo.png" />
 </p>
 
 ## About
