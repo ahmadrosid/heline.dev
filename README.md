@@ -9,12 +9,17 @@
 
 ## Requirements
 
+### Local Development
 - rust
 - golang
 - nodejs >= 18
 - java >= 8
 
-## Development
+### Docker Deployment
+- Docker
+- Docker Compose
+
+## Local Development
 
 Run script build to run dev mode locally.
 
@@ -51,3 +56,40 @@ Reset production mode - this will delete the ES data and run the indexer.
 ```bash
 bash scripts/run.sh reset
 ```
+
+## Docker Deployment
+
+Heline.dev can be easily deployed using Docker Compose. The setup includes three services:
+
+1. **Apache Solr** - Search engine running on port 8984
+2. **Heline App** - Main Go application running on port 8000
+3. **Heline Indexer** - Rust-based indexer service running on port 8080
+
+### Running with Docker Compose
+
+```bash
+# Build and start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
+```
+
+### Volumes
+
+The Docker setup uses the following persistent volumes:
+
+- `solr_data`: Stores Solr indexes and configuration
+- `app_data`: Stores application build data
+- `indexer_repos`: Stores repositories for indexing
+
+### Service Details
+
+- **Solr**: Runs on port 8984 with precreated cores for 'heline' and 'docset'
+- **Heline App**: Connects to Solr and the indexer service
+- **Heline Indexer**: Provides API for code indexing
+
+All services are connected through the 'heline-network' bridge network.
