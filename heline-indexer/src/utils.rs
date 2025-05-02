@@ -75,7 +75,13 @@ pub fn get_git_repo_path(git_url: &str) -> String {
 }
 
 pub fn get_git_ssh_url(git_url: &str) -> String {
+    // If the URL is already in HTTPS format, just return it
+    if git_url.starts_with("https://") {
+        return git_url.to_string();
+    }
+    
+    // Otherwise, construct an HTTPS URL
     let git_host = get_url_host(git_url).unwrap_or(String::new());
     let repo_path = get_git_repo_path(git_url);
-    format!("git@{}:{}.git", git_host, repo_path)
+    format!("https://{}/{}.git", git_host, repo_path)
 }
