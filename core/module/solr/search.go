@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
+	"fmt"
 
 	"github.com/ahmadrosid/heline/core/entity"
 	"github.com/ahmadrosid/heline/core/utils"
@@ -17,8 +19,14 @@ type SolrQuery struct {
 }
 
 func Search(query SolrQuery) ([]byte, error) {
-	// u, _ := url.Parse("https://heline.dev/solr/heline/select")
-	u, _ := url.Parse("http://localhost:8984/solr/heline/select")
+	// Get Solr URL from environment variables or use default
+	solrBaseURL := os.Getenv("SOLR_BASE_URL")
+	if solrBaseURL == "" {
+		solrBaseURL = "http://localhost:8984"
+	}
+	
+	solrURL := fmt.Sprintf("%s/solr/heline/select", solrBaseURL)
+	u, _ := url.Parse(solrURL)
 	q := u.Query()
 	q.Set("hl", "on")
 	q.Set("hl.fl", "content")
