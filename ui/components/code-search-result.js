@@ -44,7 +44,7 @@ export default function CodeSearchResult({
   return (
     <>
       {isLoading && (
-        <div className="flex flex-col">
+        <div className="flex flex-col absolute top-0">
           <div className="relative w-full bg-gray-200">
             <div
               style={{ width: "100%" }}
