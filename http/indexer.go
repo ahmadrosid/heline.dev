@@ -37,17 +37,12 @@ type JobStatus struct {
 	Message     *string    `json:"message,omitempty"`
 }
 
-// NewIndexerClient creates a new client for the heline-indexer API
 func NewIndexerClient() *IndexerClient {
-	// Get the indexer URL from environment or use default
 	indexerURL := os.Getenv("INDEXER_URL")
 	if indexerURL == "" {
-		// Try localhost if running locally
 		if _, err := os.Stat("/app"); os.IsNotExist(err) {
-			// Not in Docker, likely local development
 			indexerURL = "http://localhost:8080"
 		} else {
-			// In Docker environment
 			indexerURL = "http://heline-indexer:8080"
 		}
 	}
@@ -127,21 +122,14 @@ func (c *IndexerClient) GetJobStatus(jobID string) (*JobStatus, error) {
 
 // ListJobs retrieves a list of all indexing jobs
 func (c *IndexerClient) ListJobs() ([]JobStatus, error) {
-	// Print debugging information
-	fmt.Printf("Attempting to connect to indexer at: %s/jobs\n", c.BaseURL)
-	
-	// Create the request
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/jobs", c.BaseURL), nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
 	
-	// Add headers that might help with proxying
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("User-Agent", "heline-app/1.0")
 	
-	// Try to make the request
-	fmt.Println("Sending request to indexer service...")
 	resp, err := c.Client.Do(req)
 	if err != nil {
 		// If we can't connect, try a fallback URL if in Docker
