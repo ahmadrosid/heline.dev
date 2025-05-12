@@ -1,4 +1,4 @@
-.PHONY: build dev ui gen go reset prod stop index clean
+.PHONY: build dev ui gen go reset prod stop stopall index clean
 
 # Binary name
 BINARY_NAME=heline
@@ -10,7 +10,7 @@ build:
 	go build -o $(TARGET_DIR)$(BINARY_NAME)
 
 dev:
-	bash build.sh
+	bash build.sh & bash scripts/run.sh ui
 
 ui:
 	bash scripts/run.sh ui
@@ -29,6 +29,12 @@ prod:
 
 stop:
 	bash scripts/run.sh stop
+
+stopall:
+	bash scripts/run.sh stop
+	pkill -f "$(BINARY_NAME)" || true
+	lsof -ti:3000 | xargs kill -9 || true
+	@echo "All Heline.dev processes have been stopped"
 
 index:
 	bash scripts/indexing.sh

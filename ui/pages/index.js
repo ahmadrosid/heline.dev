@@ -38,7 +38,7 @@ export default function Home() {
               <span>.</span>
               <span className="text-gray-700">dev</span>
             </h1>
-            <p className="text-lg font-normal text-gray-400 tracking-tight">
+            <p className="text-lg font-normal text-gray-400 tracking-tight mb-12">
               Find exactly the code you need in seconds.
             </p>
             <div className="self-center py-2 mt-8 bg-white shadow-md w-full max-w-xl rounded-xl overflow-hidden content border">
@@ -57,14 +57,14 @@ export default function Home() {
                   autoCorrect="off"
                   autoCapitalize="off"
                   spellCheck="false"
-                  placeholder="Search for function, variable, snippets etc."
+                  placeholder="Type any function, variable or snippet to get started..."
                   className="py-2 flex-grow text-gray-900 border-none outline-none focus:outline-none focus:ring-0 autofill:shadow-fill-white"
                   aria-label="search"
                 />
               </div>
             </div>
             <div className="text-gray-500 font-light font-sm">
-              Created by{" "}
+            Made with ❤️ by{" "}
               <a
                 className="text-sky-500 font-medium hover:underline"
                 target="_blank"
@@ -72,6 +72,14 @@ export default function Home() {
               >
                 @_ahmadrosid
               </a>
+              {" · Star us on "}
+              <a
+                className="text-sky-500 font-medium hover:underline"
+                target="_blank"
+                href="https://github.com/ahmadrosid/heline.dev"
+              >GitHub
+              </a>
+              {"."}
             </div>
           </div>
         </div>
