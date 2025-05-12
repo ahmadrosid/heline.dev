@@ -311,20 +311,6 @@ func setupHelineSchema(solrBaseURL string) error {
 		return err
 	}
 
-	req, err = http.NewRequest("POST", fmt.Sprintf("%s/solr/heline/schema", solrBaseURL), bytes.NewBuffer(textNgramFieldTypeJSON))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp2, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp2.Body.Close()
-
-	// Marshal and send the text_html field type
-	fieldTypeJSON, err := json.Marshal(fieldTypeData)
 	if err != nil {
 		return err
 	}
@@ -335,11 +321,11 @@ func setupHelineSchema(solrBaseURL string) error {
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	resp3, err := client.Do(req)
+	resp1, err := client.Do(req)
 	if err != nil {
 		return err
 	}
-	defer resp3.Body.Close()
+	defer resp1.Body.Close()
 
 	// Create schema fields
 	fieldsData := map[string]interface{}{
@@ -408,7 +394,7 @@ func setupHelineSchema(solrBaseURL string) error {
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	resp4, err := client.Do(req)
+	resp1, err := client.Do(req)
 	if err != nil {
 		return err
 	}

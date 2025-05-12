@@ -11,7 +11,7 @@ import (
 )
 
 // Simple test to examine raw Solr response for highlighting
-func main() {
+func _main() {
 	// Get Solr URL from environment variables or use default
 	solrBaseURL := os.Getenv("SOLR_BASE_URL")
 	if solrBaseURL == "" {

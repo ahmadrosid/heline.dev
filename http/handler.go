@@ -50,6 +50,9 @@ func Handler(analytic http.Handler) http.Handler {
 	mux.HandleFunc("/api/index/status/", handleJobStatus)
 	mux.HandleFunc("/api/index/jobs", handleListJobs)
 	
+	// Add index management endpoints
+	mux.HandleFunc("/api/index/reset", handleResetIndex)
+
 	mux.Handle("/stats", analytic)
 
 	return wrapCORSHandler(mux, &CorsConfig{
