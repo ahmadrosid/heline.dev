@@ -106,6 +106,100 @@ func setupHelineSchema(solrBaseURL string) error {
 
 	fmt.Println("Setting up Solr schema...")
 
+	// Create code_syntax field type for better handling of code patterns
+	codeSyntaxFieldType := map[string]interface{}{
+		"add-field-type": map[string]interface{}{
+			"name":                    "code_syntax",
+			"class":                   "solr.TextField",
+			"positionIncrementGap":    "100",
+			"autoGeneratePhraseQueries": "true",
+			"analyzer": map[string]interface{}{
+				"charFilters": []map[string]interface{}{
+					{
+						"class": "solr.HTMLStripCharFilterFactory",
+					},
+				},
+				"tokenizer": map[string]interface{}{
+					"class": "solr.ClassicTokenizerFactory",
+				},
+				"filters": []map[string]interface{}{
+					{
+						"class": "solr.LowerCaseFilterFactory",
+					},
+					{
+						"class": "solr.ShingleFilterFactory",
+						"minShingleSize": "2",
+						"maxShingleSize": "5",
+						"outputUnigrams": "true",
+					},
+					{
+						"class": "solr.RemoveDuplicatesTokenFilterFactory",
+					},
+				},
+			},
+			"query": map[string]interface{}{
+				"charFilters": []map[string]interface{}{
+					{
+						"class": "solr.HTMLStripCharFilterFactory",
+					},
+				},
+				"tokenizer": map[string]interface{}{
+					"class": "solr.ClassicTokenizerFactory",
+				},
+				"filters": []map[string]interface{}{
+					{
+						"class": "solr.LowerCaseFilterFactory",
+					},
+				},
+			},
+		},
+	}
+
+	// Create text_ngram field type for partial matching
+	textNgramFieldType := map[string]interface{}{
+		"add-field-type": map[string]interface{}{
+			"name":                    "text_ngram",
+			"class":                   "solr.TextField",
+			"positionIncrementGap":    "100",
+			"analyzer": map[string]interface{}{
+				"charFilters": []map[string]interface{}{
+					{
+						"class": "solr.PatternReplaceCharFilterFactory",
+						"pattern": "([\\p{Punct}&&[^_]])",
+						"replacement": " $1 ",
+					},
+				},
+				"tokenizer": map[string]interface{}{
+					"class": "solr.NGramTokenizerFactory",
+					"minGramSize": "2",
+					"maxGramSize": "15",
+				},
+				"filters": []map[string]interface{}{
+					{
+						"class": "solr.LowerCaseFilterFactory",
+					},
+				},
+			},
+			"query": map[string]interface{}{
+				"charFilters": []map[string]interface{}{
+					{
+						"class": "solr.PatternReplaceCharFilterFactory",
+						"pattern": "([\\p{Punct}&&[^_]])",
+						"replacement": " $1 ",
+					},
+				},
+				"tokenizer": map[string]interface{}{
+					"class": "solr.StandardTokenizerFactory",
+				},
+				"filters": []map[string]interface{}{
+					{
+						"class": "solr.LowerCaseFilterFactory",
+					},
+				},
+			},
+		},
+	}
+
 	// Create text_html field type
 	fieldTypeData := map[string]interface{}{
 		"add-field-type": map[string]interface{}{
@@ -118,6 +212,11 @@ func setupHelineSchema(solrBaseURL string) error {
 					{
 						"class": "solr.HTMLStripCharFilterFactory",
 					},
+					{
+						"class": "solr.PatternReplaceCharFilterFactory",
+						"pattern": "([\\p{Punct}&&[^_]])",
+						"replacement": " $1 ",
+					},
 				},
 				"tokenizer": map[string]interface{}{
 					"class": "solr.WhitespaceTokenizerFactory",
@@ -126,16 +225,38 @@ func setupHelineSchema(solrBaseURL string) error {
 				"filters": []map[string]interface{}{
 					{
 						"class": "solr.WordDelimiterFilterFactory",
+						"generateWordParts": "1",
+						"generateNumberParts": "1",
+						"catenateWords": "1",
+						"catenateNumbers": "1",
+						"catenateAll": "0",
+						"splitOnCaseChange": "1",
+						"preserveOriginal": "1",
 					},
 					{
 						"class": "solr.LowerCaseFilterFactory",
 					},
 					{
 						"class": "solr.ASCIIFoldingFilterFactory",
+					},
+					{
+						"class": "solr.StopFilterFactory",
+						"ignoreCase": "true",
+						"words": "stopwords.txt",
 					},
 				},
 			},
 			"query": map[string]interface{}{
+				"charFilters": []map[string]interface{}{
+					{
+						"class": "solr.HTMLStripCharFilterFactory",
+					},
+					{
+						"class": "solr.PatternReplaceCharFilterFactory",
+						"pattern": "([\\p{Punct}&&[^_]])",
+						"replacement": " $1 ",
+					},
+				},
 				"tokenizer": map[string]interface{}{
 					"class": "solr.WhitespaceTokenizerFactory",
 					"rule":  "java",
@@ -143,30 +264,76 @@ func setupHelineSchema(solrBaseURL string) error {
 				"filters": []map[string]interface{}{
 					{
 						"class": "solr.WordDelimiterFilterFactory",
+						"generateWordParts": "1",
+						"generateNumberParts": "1",
+						"catenateWords": "1",
+						"catenateNumbers": "1",
+						"catenateAll": "0",
+						"splitOnCaseChange": "1",
+						"preserveOriginal": "1",
 					},
 					{
 						"class": "solr.LowerCaseFilterFactory",
 					},
 					{
 						"class": "solr.ASCIIFoldingFilterFactory",
+					},
+					{
+						"class": "solr.StopFilterFactory",
+						"ignoreCase": "true",
+						"words": "stopwords.txt",
 					},
 				},
 			},
 		},
 	}
 
-	fieldTypeJSON, err := json.Marshal(fieldTypeData)
+	codeSyntaxFieldTypeJSON, err := json.Marshal(codeSyntaxFieldType)
 	if err != nil {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/solr/heline/schema", solrBaseURL), bytes.NewBuffer(fieldTypeJSON))
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/solr/heline/schema", solrBaseURL), bytes.NewBuffer(codeSyntaxFieldTypeJSON))
 	if err != nil {
 		return err
 	}
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	textNgramFieldTypeJSON, err := json.Marshal(textNgramFieldType)
+	if err != nil {
+		return err
+	}
+
+	req, err = http.NewRequest("POST", fmt.Sprintf("%s/solr/heline/schema", solrBaseURL), bytes.NewBuffer(textNgramFieldTypeJSON))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err = client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	fieldTypeJSON, err := json.Marshal(fieldTypeData)
+	if err != nil {
+		return err
+	}
+
+	req, err = http.NewRequest("POST", fmt.Sprintf("%s/solr/heline/schema", solrBaseURL), bytes.NewBuffer(fieldTypeJSON))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
 	resp, err = client.Do(req)
 	if err != nil {
 		return err
@@ -210,6 +377,19 @@ func setupHelineSchema(solrBaseURL string) error {
 				"name":        "content",
 				"type":        "text_html",
 				"multiValued": true,
+				"stored":      true,
+				"indexed":     true,
+			},
+			{
+				"name":        "code_content",
+				"type":        "code_syntax",
+				"multiValued": true,
+				"stored":      true,
+				"indexed":     true,
+			},
+			{
+				"name":        "identifier_ngram",
+				"type":        "text_ngram",
 				"stored":      true,
 				"indexed":     true,
 			},
