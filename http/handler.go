@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/ahmadrosid/heline/core/entity"
@@ -193,6 +194,72 @@ func handleListJobs(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(jobs)
 }
 
+// enhanceHighlighting improves the highlighting of code patterns with special characters
+func enhanceHighlighting(result []byte, originalQuery string) []byte {
+	// Parse the JSON result
+	var data map[string]interface{}
+	if err := json.Unmarshal(result, &data); err != nil {
+		// If we can't parse the JSON, return the original result
+		return result
+	}
+
+	// Check if highlighting data exists
+	highlighting, ok := data["highlighting"].(map[string]interface{})
+	if !ok {
+		return result
+	}
+
+	// Prepare the pattern to be highlighted
+	// Escape special regex characters
+	escapedQuery := regexp.QuoteMeta(originalQuery)
+
+	// Process each document's highlighting
+	for docID, highlightData := range highlighting {
+		docHighlight, ok := highlightData.(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		// Process content field highlighting
+		contentHighlights, ok := docHighlight["content"].([]interface{})
+		if !ok {
+			continue
+		}
+
+		// Process each highlighted snippet
+		for i, snippet := range contentHighlights {
+			snippetStr, ok := snippet.(string)
+			if !ok {
+				continue
+			}
+
+			// Apply custom highlighting to ensure the full pattern is highlighted
+			// This regex matches the pattern but avoids matching inside HTML tags
+			re := regexp.MustCompile(fmt.Sprintf("(?i)(%s)(?![^<>]*>)", escapedQuery))
+			enhancedSnippet := re.ReplaceAllString(snippetStr, "<mark>$1</mark>")
+
+			// Update the snippet in the data
+			contentHighlights[i] = enhancedSnippet
+		}
+
+		// Update the content highlights
+		docHighlight["content"] = contentHighlights
+		highlighting[docID] = docHighlight
+	}
+
+	// Update the highlighting in the data
+	data["highlighting"] = highlighting
+
+	// Convert back to JSON
+	enhancedResult, err := json.Marshal(data)
+	if err != nil {
+		// If we can't convert back to JSON, return the original result
+		return result
+	}
+
+	return enhancedResult
+}
+
 func handleSearch(w http.ResponseWriter, r *http.Request) {
 	enc := json.NewEncoder(w)
 	param := entity.QueryParam{}
@@ -224,10 +291,19 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Original search query for post-processing highlighting
+	originalQuery := q
+
 	result, err := solr.Search(solr.SolrQuery{
 		Query:  q,
 		Filter: getQueryFilter(param),
 	})
+	
+	// Post-process the result to improve highlighting if needed
+	if err == nil && len(originalQuery) > 0 && strings.ContainsAny(originalQuery, ":(){}[]") {
+		// For queries with special characters, we may need to enhance the highlighting
+		result = enhanceHighlighting(result, originalQuery)
+	}
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
