@@ -12,7 +12,6 @@ services:
     command: >
       bash -c "
         solr-precreate heline &&
-        solr-precreate docset &&
         exec solr -f
       "
     networks:

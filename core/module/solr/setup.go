@@ -61,31 +61,6 @@ func createCores(solrBaseURL string) error {
 		}
 	}
 
-	// Check if docset core exists
-	resp, err = http.Get(fmt.Sprintf("%s/solr/admin/cores?action=STATUS&core=docset", solrBaseURL))
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	body, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-
-	if err := json.Unmarshal(body, &statusResp); err != nil {
-		return err
-	}
-
-	// Create docset core if it doesn't exist
-	if status, ok := statusResp["status"].(map[string]interface{}); !ok || status["docset"] == nil {
-		fmt.Println("Creating docset core...")
-		createURL := fmt.Sprintf("%s/solr/admin/cores?action=CREATE&name=docset&instanceDir=docset&config=solrconfig.xml&dataDir=data", solrBaseURL)
-		if _, err := http.Get(createURL); err != nil {
-			return err
-		}
-	}
-
 	return nil
 }
 

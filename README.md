@@ -96,7 +96,7 @@ The Docker setup uses the following persistent volumes:
 
 ### Service Details
 
-- **Solr**: Runs on port 8984 with precreated cores for 'heline' and 'docset'
+- **Solr**: Runs on port 8984 with precreated cores for 'heline'
 - **Heline App**: Connects to Solr and the indexer service
 - **Heline Indexer**: Provides API for code indexing
 

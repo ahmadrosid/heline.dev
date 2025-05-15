@@ -52,7 +52,7 @@ func TestResetIndex(t *testing.T) {
 
 		// Create core endpoint
 		case path == "/solr/admin/cores" && query.Get("action") == "CREATE":
-			if query.Get("name") == "heline" || query.Get("name") == "docset" {
+			if query.Get("name") == "heline" {
 				w.WriteHeader(http.StatusOK)
 				fmt.Fprintln(w, `{"responseHeader":{"status":0,"QTime":100}}`)
 				return
@@ -62,7 +62,7 @@ func TestResetIndex(t *testing.T) {
 		// Check core status endpoint
 		case path == "/solr/admin/cores" && query.Get("action") == "STATUS":
 			coreName := query.Get("core")
-			if coreName == "heline" || coreName == "docset" {
+			if coreName == "heline" {
 				w.WriteHeader(http.StatusOK)
 				fmt.Fprintf(w, `{"responseHeader":{"status":0,"QTime":1},"status":{"%s":{"name":"%s","instanceDir":"path/to/%s"}}}`, coreName, coreName, coreName)
 				return

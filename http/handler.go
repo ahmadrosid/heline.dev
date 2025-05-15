@@ -284,16 +284,6 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	// q = "*" + q + "*"
 	println(q)
 
-	if param.ID != "" && param.Tbm == "docs" {
-		handleGetDocsetByID(w, param.ID)
-		return
-	}
-
-	if param.Tbm == "docs" {
-		handleSearchDocset(w, q)
-		return
-	}
-
 	// Original search query for post-processing highlighting
 	originalQuery := q
 
