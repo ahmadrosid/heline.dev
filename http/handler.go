@@ -14,7 +14,7 @@ import (
 	queryparam "github.com/tomwright/queryparam/v4"
 )
 
-func Handler(analytic http.Handler) http.Handler {
+func Handler() http.Handler {
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -23,26 +23,6 @@ func Handler(analytic http.Handler) http.Handler {
 			"message": "Welcome to Heline API",
 		})
 	}))
-	mux.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
-		var query = "/search.html"
-		if r.URL.Query().Get("q") != "" {
-			query = query + "?q=" + r.URL.Query().Get("q")
-		}
-
-		if r.URL.Query().Get("filter[repo]") != "" {
-			query = query + "&filter[repo]=" + r.URL.Query().Get("filter[repo]")
-		}
-
-		if r.URL.Query().Get("filter[lang]") != "" {
-			query = query + "&filter[lang]=" + r.URL.Query().Get("filter[lang]")
-		}
-
-		if r.URL.Query().Get("filter[path]") != "" {
-			query = query + "&filter[path]=" + r.URL.Query().Get("filter[path]")
-		}
-
-		http.Redirect(w, r, query, http.StatusSeeOther)
-	})
 	mux.HandleFunc("/api/search", handleSearch)
 	
 	// Add indexer API endpoints
@@ -52,8 +32,6 @@ func Handler(analytic http.Handler) http.Handler {
 	
 	// Add index management endpoints
 	mux.HandleFunc("/api/index/reset", handleResetIndex)
-
-	mux.Handle("/stats", analytic)
 
 	return wrapCORSHandler(mux, &CorsConfig{
 		allowedOrigin: "*",
