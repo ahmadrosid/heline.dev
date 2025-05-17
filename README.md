@@ -1,65 +1,69 @@
 <h1 align="center"> Heline.dev </h1>
-<p align="center">
-    Code search for development productivity.
-</p>
+<p align="center"> Code search for development productivity. </p>
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/ahmadrosid/heline.dev/refs/heads/main/demo.png" />
+    <img src="https://raw.githubusercontent.com/ahmadrosid/heline.dev/refs/heads/main/demo.png" /> 
 </p>
 
-## About
+When I first started coding, finding the right code examples was always a struggle. That's why I built Heline.dev - a practical code search tool that actually makes sense for me.
 
-Heline.dev is a modern code search tool built with a multi-language technology stack:
+## What is this?
 
-- **Rust**: Powers the code highlighting and indexing functionality, providing fast and efficient code processing (using [hl](https://github.com/ahmadrosid/hl) syntax highlighter)
-- **Go**: Handles the backend API services and core application logic
-- **Next.js**: Delivers a responsive and interactive frontend user interface
+Heline.dev combines three powerful technologies:
 
-## Requirements
+- **Rust**: Handles the heavy lifting for code highlighting and indexing (using my [hl](https://github.com/ahmadrosid/hl) syntax highlighter)
+- **Go**: Powers the backend API - fast and reliable
+- **Next.js**: Creates a smooth frontend experience
 
-### Local Development
+The hl syntax highlighter (https://github.com/ahmadrosid/hl) is something I built specifically for this project when I couldn't find a highlighting solution that worked exactly how I wanted.
+
+## Getting Started
+
+### For local development
+You'll need:
 - rust
 - golang
 - nodejs >= 18
 - java >= 8
 
-### Docker Deployment
+### For Docker deployment
+Just have:
 - Docker
 - Docker Compose
 
 ## Local Development
 
-Run script build to run dev mode locally.
+Want to run it in dev mode? Just do:
 
 ```bash
 bash build.sh
 ```
 
-Install required dependencies.
+Need the dependencies?
 
 ```bash
 bash scripts/bootstrap.sh
 ```
 
-Start solr
+Starting Solr is easy:
 
 ```bash
 bash scripts/solr.sh start
 ```
 
-Prepare solr index
+Prepare your index:
 
 ```bash
 bash scripts/solr.sh prepare
 ```
 
-Run production mode
+For production mode:
 
 ```bash
 bash scripts/run.sh production
 ```
 
-Reset production mode - this will delete the ES data and run the indexer.
+Need to reset everything? This will clear ES data and reindex:
 
 ```bash
 bash scripts/run.sh reset
@@ -67,37 +71,35 @@ bash scripts/run.sh reset
 
 ## Docker Deployment
 
-Heline.dev can be easily deployed using Docker Compose. The setup includes three services:
+I made Docker deployment super simple. You get three services:
 
-1. **Apache Solr** - Search engine running on port 8984
-2. **Heline App** - Main Go application running on port 8000
-3. **Heline Indexer** - Rust-based indexer service running on port 8080
+1. **Apache Solr**: Search engine on port 8984
+2. **Heline App**: Main Go application on port 8000
+3. **Heline Indexer**: Rust-based indexer on port 8080
 
-### Running with Docker Compose
+### Running with Docker
 
 ```bash
-# Build and start all services
+# Start everything
 docker compose up -d
 
-# View logs
+# Check the logs
 docker compose logs -f
 
-# Stop all services
+# Stop when you're done
 docker compose down
 ```
 
-### Volumes
+### What's stored where?
 
-The Docker setup uses the following persistent volumes:
+- `solr_data`: All your Solr indexes
+- `app_data`: Application build files
+- `indexer_repos`: Your repositories for searching
 
-- `solr_data`: Stores Solr indexes and configuration
-- `app_data`: Stores application build data
-- `indexer_repos`: Stores repositories for indexing
+### How it connects
 
-### Service Details
+- **Solr** runs on port 8984 with a 'heline' core
+- **Heline App** connects to both Solr and the indexer
+- **Heline Indexer** provides the API for code indexing
 
-- **Solr**: Runs on port 8984 with precreated cores for 'heline'
-- **Heline App**: Connects to Solr and the indexer service
-- **Heline Indexer**: Provides API for code indexing
-
-All services are connected through the 'heline-network' bridge network.
+Everything talks to each other through the 'heline-network' bridge.
