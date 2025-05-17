@@ -11,7 +11,7 @@
 
 Heline.dev is a modern code search tool built with a multi-language technology stack:
 
-- **Rust**: Powers the code highlighting and indexing functionality, providing fast and efficient code processing
+- **Rust**: Powers the code highlighting and indexing functionality, providing fast and efficient code processing (using [hl](https://github.com/ahmadrosid/hl) syntax highlighter)
 - **Go**: Handles the backend API services and core application logic
 - **Next.js**: Delivers a responsive and interactive frontend user interface
 
