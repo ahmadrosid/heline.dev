@@ -50,16 +50,10 @@ docker-app:
 
 # Run indexing in Docker
 docker-index:
-	@echo "Starting services if not already running..."
-	docker compose up -d
-	@echo "Running indexing..."
 	docker compose exec heline-app bash scripts/indexing.sh
 
 # Reset Solr in Docker
 docker-reset:
-	@echo "Starting services if not already running..."
-	docker compose up -d
-	@echo "Resetting Solr..."
 	docker compose exec heline-app bash scripts/solr.sh clean && docker compose exec heline-app bash scripts/solr.sh prepare
 
 # Stop all Docker services
