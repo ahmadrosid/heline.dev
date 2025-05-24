@@ -61,7 +61,11 @@ fi
 
 if [ "$1" == $PREPARE ]; then
   # Copy initial solr config file for heline index if not exists.
-  if ! test -d "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline"; then
+  if [ -n "$DOCKER_ENV" ]; then
+    echo "In Docker environment, Solr core is created by Docker Compose"
+  elif ! test -d "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline"; then
+    # Use sudo only if not in Docker
+    cp -r "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/configsets/_default" "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline" || \
     sudo cp -r "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/configsets/_default" "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline"
   fi
 
@@ -362,5 +366,11 @@ if [ "$1" == $CLEAN ]; then
     --url "$SOLR_BASE_URL/solr/admin/cores?action=UNLOAD&core=heline&deleteIndex=true&deleteDataDir=true&deleteInstanceDir=true"
 
   # Delete solr folder
-  sudo rm -rf "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline"
+  if [ -n "$DOCKER_ENV" ]; then
+    echo "In Docker environment, Solr data is managed by Docker volumes"
+  else
+    # Try without sudo first, then with sudo if needed
+    rm -rf "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline" || \
+    sudo rm -rf "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline"
+  fi
 fi
