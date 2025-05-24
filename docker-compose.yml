@@ -6,7 +6,7 @@ services:
     image: solr:8.11.4
     container_name: heline-solr
     ports:
-      - "8984:8983"
+      - "8983:8983"
     volumes:
       - solr_data:/var/solr
     command: >
@@ -45,8 +45,7 @@ services:
       - .:/app
       - app_data:/app/_build
     working_dir: /app
-    # Use make targets instead of direct commands
-    command: bash -c "cp /heline /app/ && make go"
+    command: bash -c "cp /heline /app/ && heline server start"
 
   # Heline Indexer API Service (Rust application)
   heline-indexer:
@@ -94,8 +93,15 @@ services:
         condition: service_started
     networks:
       - heline-network
-    # Use make dev target
-    command: make dev
+    # Use a Docker-friendly approach to start the application
+    command: >
+      bash -c "cd /app && \
+      if [ ! -d \"ui/node_modules\" ]; then \
+        cd ui && pnpm install && cd ..; \
+      fi && \
+      go build -o heline && \
+      ./heline server start & \
+      cd ui && pnpm dev"
 
 networks:
   heline-network:

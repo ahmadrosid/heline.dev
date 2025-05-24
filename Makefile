@@ -18,13 +18,6 @@ ui:
 gen:
 	bash scripts/run.sh gen
 
-go:
-	if [ -f "./$(BINARY_NAME)" ]; then \
-		./$(BINARY_NAME) server start; \
-	else \
-		go build && ./$(BINARY_NAME) server start; \
-	fi
-
 reset:
 	bash scripts/solr.sh clean && bash scripts/solr.sh prepare
 
