@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -69,6 +69,8 @@ func Search(query SolrQuery) ([]byte, error) {
 		escapedQuery = strings.ReplaceAll(escapedQuery, ")", "\\)")
 		escapedQuery = strings.ReplaceAll(escapedQuery, "[", "\\[")
 		escapedQuery = strings.ReplaceAll(escapedQuery, "]", "\\]")
+		escapedQuery = strings.ReplaceAll(escapedQuery, "{", "\\{")
+		escapedQuery = strings.ReplaceAll(escapedQuery, "}", "\\}")
 		
 		// Build a query that searches for the exact phrase and also for parts of the phrase
 		// This improves recall while still prioritizing exact matches
@@ -78,18 +80,34 @@ func Search(query SolrQuery) ([]byte, error) {
 		terms := strings.Fields(query.Query)
 		for _, term := range terms {
 			if len(term) > 1 { // Only add meaningful terms
-				solrQuery += fmt.Sprintf(" OR content:%s^2", term)
+				// Escape the term for safe querying
+				escapedTerm := strings.ReplaceAll(term, ":", "\\:")
+				escapedTerm = strings.ReplaceAll(escapedTerm, "(", "\\(")
+				escapedTerm = strings.ReplaceAll(escapedTerm, ")", "\\)")
+				escapedTerm = strings.ReplaceAll(escapedTerm, "[", "\\[")
+				escapedTerm = strings.ReplaceAll(escapedTerm, "]", "\\]")
+				escapedTerm = strings.ReplaceAll(escapedTerm, "{", "\\{")
+				escapedTerm = strings.ReplaceAll(escapedTerm, "}", "\\}")
+				solrQuery += fmt.Sprintf(" OR content:%s^2", escapedTerm)
 			}
 		}
 		
 		// Also search for the pattern without spaces
 		noSpaceQuery := strings.ReplaceAll(query.Query, " ", "")
 		if noSpaceQuery != query.Query {
-			solrQuery += fmt.Sprintf(" OR content:%s^5", noSpaceQuery)
+			// Escape the no-space query as well
+			escapedNoSpace := strings.ReplaceAll(noSpaceQuery, ":", "\\:")
+			escapedNoSpace = strings.ReplaceAll(escapedNoSpace, "(", "\\(")
+			escapedNoSpace = strings.ReplaceAll(escapedNoSpace, ")", "\\)")
+			escapedNoSpace = strings.ReplaceAll(escapedNoSpace, "[", "\\[")
+			escapedNoSpace = strings.ReplaceAll(escapedNoSpace, "]", "\\]")
+			escapedNoSpace = strings.ReplaceAll(escapedNoSpace, "{", "\\{")
+			escapedNoSpace = strings.ReplaceAll(escapedNoSpace, "}", "\\}")
+			solrQuery += fmt.Sprintf(" OR content:%s^5", escapedNoSpace)
 		}
 		
-		// For highlighting, use the exact phrase
-		hlQuery = fmt.Sprintf("content:\"%s\"", escapedQuery)
+		// For highlighting, use the original query in quotes for proper phrase matching
+		hlQuery = fmt.Sprintf("content:\"%s\"", query.Query)
 	} else {
 		// Use standard query for simple terms
 		solrQuery = "content:" + query.Query
@@ -119,7 +137,7 @@ func Search(query SolrQuery) ([]byte, error) {
 	fmt.Println("Original query:", query.Query)
 	fmt.Println("Solr query:", solrQuery)
 	fmt.Println("Highlight query:", hlQuery)
-	fmt.Println("==== END QUERY INFO ====\n")
+	fmt.Println("==== END QUERY INFO ====")
 
 	data := entity.Map{
 		"query":  solrQuery,
@@ -165,13 +183,13 @@ func Search(query SolrQuery) ([]byte, error) {
 	}
 
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	body, _ := io.ReadAll(res.Body)
 
 	// Debug: Print the query information
 	fmt.Println("\n==== SOLR QUERY INFO ====")
 	fmt.Println("Query:", solrQuery)
 	fmt.Println("Highlight Query:", q.Get("hl.q"))
-	fmt.Println("==== END QUERY INFO ====\n")
+	fmt.Println("==== END QUERY INFO ====")
 
 	return body, nil
 }

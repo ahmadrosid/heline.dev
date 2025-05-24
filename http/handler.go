@@ -215,8 +215,8 @@ func enhanceHighlighting(result []byte, originalQuery string) []byte {
 			}
 
 			// Apply custom highlighting to ensure the full pattern is highlighted
-			// This regex matches the pattern but avoids matching inside HTML tags
-			re := regexp.MustCompile(fmt.Sprintf("(?i)(%s)(?![^<>]*>)", escapedQuery))
+			// Simple case-insensitive match for the escaped query
+			re := regexp.MustCompile(fmt.Sprintf("(?i)(%s)", escapedQuery))
 			enhancedSnippet := re.ReplaceAllString(snippetStr, "<mark>$1</mark>")
 
 			// Update the snippet in the data
