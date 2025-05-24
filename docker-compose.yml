@@ -42,12 +42,11 @@ services:
     networks:
       - heline-network
     volumes:
+      - .:/app
       - app_data:/app/_build
-    command: >
-      bash -c "
-        sleep 10 &&
-        ./heline server start
-      "
+    working_dir: /app
+    # Use make targets instead of direct commands
+    command: make go
 
   # Heline Indexer API Service (Rust application)
   heline-indexer:
@@ -71,6 +70,32 @@ services:
       bash -c "
         ./heline-indexer api
       "
+  
+  # Development service with all dependencies
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: heline-dev
+    ports:
+      - "8000:8000"
+      - "3000:3000"
+    environment:
+      - SOLR_BASE_URL=http://solr:8983
+      - SOLR_PORT=8983
+      - INDEXER_URL=http://heline-indexer:8080
+    volumes:
+      - .:/app
+    working_dir: /app
+    depends_on:
+      solr:
+        condition: service_healthy
+      heline-indexer:
+        condition: service_started
+    networks:
+      - heline-network
+    # Use make dev target
+    command: make dev
 
 networks:
   heline-network:

@@ -1,0 +1,26 @@
+FROM golang:1.21.1-alpine
+
+# Install required dependencies
+RUN apk add --no-cache bash make curl git nodejs npm
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Set working directory
+WORKDIR /app
+
+# Copy go.mod and go.sum first for better caching
+COPY go.* ./
+RUN go mod download
+
+# Copy the rest of the application
+COPY . .
+
+# Expose ports
+EXPOSE 8000
+EXPOSE 3000
+
+# Set environment variables
+ENV PORT=8000
+
+# The entrypoint will be the Makefile commands via docker-compose

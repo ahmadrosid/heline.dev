@@ -1,4 +1,4 @@
-.PHONY: build dev ui gen go reset prod stop stopall index clean
+.PHONY: build dev ui gen go reset prod stop stopall index clean docker-up docker-down docker-dev docker-index docker-reset
 
 # Binary name
 BINARY_NAME=heline
@@ -42,3 +42,27 @@ index:
 clean:
 	rm -f $(TARGET_DIR)$(BINARY_NAME)
 	rm -rf ui/dist
+
+# Docker Compose targets
+docker-up:
+	docker-compose up -d
+
+# Start the development environment with Docker
+docker-dev:
+	docker-compose up dev
+
+# Run only the application service
+docker-app:
+	docker-compose up heline-app
+
+# Run indexing in Docker
+docker-index:
+	docker-compose exec heline-app make index
+
+# Reset Solr in Docker
+docker-reset:
+	docker-compose exec heline-app make reset
+
+# Stop all Docker services
+docker-down:
+	docker-compose down
