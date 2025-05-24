@@ -9,6 +9,8 @@ services:
       - solr_data:/var/solr
     command: >
       bash -c "
+        mkdir -p /var/solr/data/heline/conf &&
+        cp -r /opt/solr/server/solr/configsets/_default/conf/* /var/solr/data/heline/conf/ &&
         solr-precreate heline &&
         exec solr -f
       "

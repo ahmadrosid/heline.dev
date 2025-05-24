@@ -60,18 +60,36 @@ if [ "$1" == $STOP ]; then
 fi
 
 if [ "$1" == $PREPARE ]; then
-  # Copy initial solr config file for heline index if not exists.
+  # Handle core creation differently in Docker vs local environment
   if [ -n "$DOCKER_ENV" ]; then
-    echo "In Docker environment, Solr core is created by Docker Compose"
-  elif ! test -d "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline"; then
-    # Use sudo only if not in Docker
-    cp -r "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/configsets/_default" "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline" || \
-    sudo cp -r "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/configsets/_default" "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline"
+    echo "In Docker environment, checking if Solr core exists"
+    
+    # Check if core exists
+    CORE_STATUS=$(curl -s "$SOLR_BASE_URL/solr/admin/cores?action=STATUS&core=heline")
+    if echo "$CORE_STATUS" | grep -q "\"heline\":{"]; then
+      echo "Solr core 'heline' already exists"
+    else
+      echo "Creating Solr core 'heline' in Docker environment"
+      # In Docker, we need to create the core with the right parameters
+      curl --request GET \
+        --url "$SOLR_BASE_URL/solr/admin/cores?action=CREATE&name=heline&instanceDir=heline&config=solrconfig.xml&dataDir=data"
+      
+      echo "Waiting for core to be available..."
+      sleep 2
+    fi
+  else
+    # Local environment - copy config files if needed
+    if ! test -d "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline"; then
+      echo "Creating Solr core 'heline' in local environment"
+      # Use sudo only if not in Docker
+      cp -r "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/configsets/_default" "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline" || \
+      sudo cp -r "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/configsets/_default" "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline"
+      
+      # Create core
+      curl --request GET \
+        --url "$SOLR_BASE_URL/solr/admin/cores?action=CREATE&name=heline&instanceDir=heline&config=solrconfig.xml&dataDir=data"
+    fi
   fi
-
-  # Create core
-  curl --request GET \
-    --url "$SOLR_BASE_URL/solr/admin/cores?action=CREATE&name=heline&instanceDir=heline&config=solrconfig.xml&dataDir=data"
 
   # Create code_syntax field type for better handling of code patterns
   curl --request POST \
