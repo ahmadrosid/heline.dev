@@ -43,7 +43,7 @@ services:
       - .:/app
       - app_data:/app/_build
     working_dir: /app
-    command: bash -c "cp /heline /app/ && heline server start"
+    command: bash -c "cp /heline /app/ && /app/heline server start"
 
   # Heline Indexer API Service (Rust application)
   heline-indexer:
