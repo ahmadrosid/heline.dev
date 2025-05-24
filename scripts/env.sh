@@ -12,8 +12,16 @@ GO_VERSION="go1.16.10"
 GO_DOWNLOAD_URL="https://dl.google.com/go/$GO_VERSION.linux-amd64.tar.gz"
 GO_BUILD_FOLDER="$BUILD_FOLDER/go"
 
-SOLR_PORT=8984
-SOLR_BASE_URL="http://localhost:$SOLR_PORT"
+# Use environment variables if set, otherwise use defaults
+# This allows Docker to override these values
+SOLR_PORT=${SOLR_PORT:-8984}
+
+# In Docker, SOLR_BASE_URL will be set to http://solr:8983
+# For local development, use localhost
+SOLR_BASE_URL=${SOLR_BASE_URL:-"http://localhost:$SOLR_PORT"}
+
+# Print Solr configuration for debugging
+echo "Using Solr at: $SOLR_BASE_URL"
 
 if test -t 1; then # if terminal
     ncolors=$(which tput > /dev/null && tput colors) # supports color

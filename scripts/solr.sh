@@ -1,5 +1,17 @@
 #!/bin/bash
-. scripts/env.sh
+
+# Source the environment file if it exists and we're not in Docker
+if [ -f "scripts/env.sh" ]; then
+  . scripts/env.sh
+fi
+
+# In Docker, these environment variables should be set by docker-compose
+# If not set, use defaults (for local development)
+SOLR_PORT=${SOLR_PORT:-8984}
+SOLR_BASE_URL=${SOLR_BASE_URL:-"http://localhost:$SOLR_PORT"}
+
+# Print Solr configuration for debugging
+echo "Using Solr at: $SOLR_BASE_URL"
 
 START="start"
 STOP="stop"
@@ -7,19 +19,44 @@ PREPARE="prepare"
 CLEAN="clean"
 
 if [ "$1" == $START ]; then
-  # Don't start solr if it already run.
-  bash $SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/bin/solr status
-  if [ "$?" == "0" ]; then
-    echo "${blue}Solr server already started.${normal}"
+  # Check if we're in Docker
+  if [ -n "$DOCKER_ENV" ]; then
+    echo "In Docker environment, Solr should be started by Docker Compose"
+    # Check if Solr is accessible
+    if curl -s -f "$SOLR_BASE_URL/solr/admin/info/system" > /dev/null; then
+      echo "Solr is running at $SOLR_BASE_URL"
+    else
+      echo "WARNING: Cannot connect to Solr at $SOLR_BASE_URL"
+    fi
   else
-    echo "${green}Starting solr server...${normal}"
-    sudo bash $SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/bin/solr start -p $SOLR_PORT -force
+    # Local environment
+    # Don't start solr if it already run.
+    if [ -d "$SOLR_BUILD_FOLDER" ] && [ -f "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/bin/solr" ]; then
+      bash $SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/bin/solr status
+      if [ "$?" == "0" ]; then
+        echo "${blue}Solr server already started.${normal}"
+      else
+        echo "${green}Starting solr server...${normal}"
+        sudo bash $SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/bin/solr start -p $SOLR_PORT -force
+      fi
+    else
+      echo "Solr installation not found at $SOLR_BUILD_FOLDER/solr-$SOLR_VERSION"
+    fi
   fi
 fi
 
 if [ "$1" == $STOP ]; then
-  echo "${green}Stoping solr server...${normal}"
-  sudo bash $SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/bin/solr stop -force -all
+  # Check if we're in Docker
+  if [ -n "$DOCKER_ENV" ]; then
+    echo "In Docker environment, Solr should be stopped by Docker Compose"
+  else
+    echo "${green}Stopping solr server...${normal}"
+    if [ -d "$SOLR_BUILD_FOLDER" ] && [ -f "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/bin/solr" ]; then
+      sudo bash $SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/bin/solr stop -force -all
+    else
+      echo "Solr installation not found at $SOLR_BUILD_FOLDER/solr-$SOLR_VERSION"
+    fi
+  fi
 fi
 
 if [ "$1" == $PREPARE ]; then
