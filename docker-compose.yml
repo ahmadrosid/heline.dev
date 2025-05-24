@@ -46,7 +46,7 @@ services:
       - app_data:/app/_build
     working_dir: /app
     # Use make targets instead of direct commands
-    command: make go
+    command: bash -c "cp /heline /app/ && make go"
 
   # Heline Indexer API Service (Rust application)
   heline-indexer:
