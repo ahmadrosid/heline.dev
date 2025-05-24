@@ -361,15 +361,19 @@ if [ "$1" == $PREPARE ]; then
 fi
 
 if [ "$1" == $CLEAN ]; then
-  # Delete core first
-  curl --request GET \
-    --url "$SOLR_BASE_URL/solr/admin/cores?action=UNLOAD&core=heline&deleteIndex=true&deleteDataDir=true&deleteInstanceDir=true"
-
-  # Delete solr folder
+  # In Docker environment, just unload the core via API
+  # Don't try to delete any folders
   if [ -n "$DOCKER_ENV" ]; then
-    echo "In Docker environment, Solr data is managed by Docker volumes"
+    echo "In Docker environment, unloading Solr core via API"
+    curl --request GET \
+      --url "$SOLR_BASE_URL/solr/admin/cores?action=UNLOAD&core=heline&deleteIndex=true&deleteDataDir=true&deleteInstanceDir=true"
+    echo "Solr core unloaded. Data will be managed by Docker volumes."
   else
-    # Try without sudo first, then with sudo if needed
+    # Local environment - delete core first
+    curl --request GET \
+      --url "$SOLR_BASE_URL/solr/admin/cores?action=UNLOAD&core=heline&deleteIndex=true&deleteDataDir=true&deleteInstanceDir=true"
+
+    # Delete solr folder (local only)
     rm -rf "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline" || \
     sudo rm -rf "$SOLR_BUILD_FOLDER/solr-$SOLR_VERSION/server/solr/heline"
   fi
